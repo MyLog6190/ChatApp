@@ -26,7 +26,7 @@ public class SecurityConfig {
                                               // SameSite 설정으로 자동 전송 차단
                 .cors(Customizer.withDefaults());
 
-        return null;
+        return http.build();
     }
 
 }
