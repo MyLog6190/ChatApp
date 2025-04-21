@@ -2,10 +2,10 @@
 Front
 
 - TypeScript
+- React Query
 - React Native
 - React Navigation
 - Axios
--
 
 Back
 
