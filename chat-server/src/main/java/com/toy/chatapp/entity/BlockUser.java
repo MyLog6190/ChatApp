@@ -20,7 +20,7 @@ public class BlockUser {
      * ? 연관관계 맵핑해서 가져오려면 userId로 연결해서 조회해야하고
      * ? block user 데이터도 필요하니깐 양쪽으로 ManyToOne으로 조회해야하는데
      * ? 어느쪽이 더 효율적인지?
-     * ? BlockUser 따로 조회하는게 더 효율적인 것 같기도 한데 ?
+     * ? 아니면 DTO를 만들어 처리할지
      */
     private User blockId;
 
