@@ -18,6 +18,7 @@ import lombok.Getter;
 @Entity
 @Getter
 public class User {
+
     @Id
     @GeneratedValue
     private Long id;
@@ -38,4 +39,7 @@ public class User {
     private List<BlockUser> blockUsers = new ArrayList<>();
 
     private LocalDateTime createAt;
+
+    private LocalDateTime updateAt;
+
 }

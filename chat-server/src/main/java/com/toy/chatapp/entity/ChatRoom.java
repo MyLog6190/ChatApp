@@ -17,4 +17,5 @@ public class ChatRoom {
     private Long id;
     private ChatType chatType;
     private LocalDateTime createAt;
+    private Boolean isActive;
 }
