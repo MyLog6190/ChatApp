@@ -1,4 +1,4 @@
-package com.toy.chatapp.config;
+package com.toy.chatapp.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
