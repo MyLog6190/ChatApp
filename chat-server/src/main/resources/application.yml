@@ -23,3 +23,5 @@ springdoc:
     operations-sorter: method
   default-produces-media-type: application/json
   default-consumes-media-type: application/json
+
+scrietKey: create-secret-key-in-chat-app
