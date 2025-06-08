@@ -7,4 +7,6 @@ export type HomeStackParamList = {
   [homeNavigations.SIGN_UP]: undefined;
   [homeNavigations.FRIEND_LIST]: undefined;
   [homeNavigations.CHAT_ROOM_LIST]: undefined;
+  [homeNavigations.CHAT_ROOM]: undefined;
+  [homeNavigations.MY_PAGE]: undefined;
 };
