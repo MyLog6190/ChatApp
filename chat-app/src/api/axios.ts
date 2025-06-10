@@ -1,33 +1,16 @@
-import axios, {Method} from 'axios';
-import {RequestBody} from '../types/domain/request';
+import axios from 'axios';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 const baseURL: string | undefined = process.env.API_BASE_URL;
 
-// Axios 인스턴스를 생성하는 함수
-const axiosInstance = async () => {
-  return axios.create({
-    baseURL,
-    withCredentials: true,
-  });
-};
+const api = axios.create({
+  baseURL: baseURL,
+  timeout: 5000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-// // 요청 함수
-// const axiosInstance = async <RequestType, ResponseType>(
-//   method: Method,
-//   path: string,
-//   data?: RequestBody<RequestType> | null,
-// ): Promise<ResponseBody<ResponseType>> => {
-//   const instance = await createAxios(); //  인스턴스 생성
-
-//   const response = await instance.request<ResponseBody<ResponseType>>({
-//     method,
-//     url: path,
-//     ...(method === 'GET' ? {params: data} : {data}),
-//   });
-//   return response.data;
-// };
-
-export default axiosInstance;
+export default api;
