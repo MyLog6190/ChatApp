@@ -36,10 +36,19 @@ public class User {
     private UserRole role;
 
     @OneToMany
+    private List<FriendUser> friends = new ArrayList<>();
+
+    @OneToMany
     private List<BlockUser> blockUsers = new ArrayList<>();
 
     private LocalDateTime createAt;
 
     private LocalDateTime updateAt;
 
+    public User(String email, String password, String name, UserRole role) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.role = role;
+    }
 }

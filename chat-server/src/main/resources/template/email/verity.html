@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h2>안녕하세요, <span th:text="${name}">고객님</span></h2>
+    <p>아래 버튼을 클릭하여 이메일을 인증해주세요.</p>
+    <a
+      th:href="${verifyUrl}"
+      style="
+        padding: 10px 20px;
+        background: #1976d2;
+        color: white;
+        text-decoration: none;
+      "
+    >
+      이메일 인증하기
+    </a>
+  </body>
+</html>
