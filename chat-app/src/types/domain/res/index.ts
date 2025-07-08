@@ -1,3 +1,8 @@
-import ResponseDto from './response.dto';
+export interface ResponseDto {
+  code: string;
+  message: string;
+}
 
-export type ResponseBody<T> = T | ResponseDto | null;
+export interface ResponseBody<T> extends ResponseDto {
+  data: T | null;
+}

@@ -1,5 +1,4 @@
-import ResponseDto from './response.dto';
-
-export interface LoginResponse extends ResponseDto {
+export interface LoginResponse {
   accessToken: string;
+  refreshToken: string;
 }

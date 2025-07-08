@@ -5,7 +5,7 @@ dotenv.config();
 
 const baseURL: string | undefined = process.env.API_BASE_URL;
 
-const api = axios.create({
+const axiosInstance = axios.create({
   baseURL: baseURL,
   timeout: 5000,
   headers: {
@@ -13,4 +13,4 @@ const api = axios.create({
   },
 });
 
-export default api;
+export default axiosInstance;

@@ -1,6 +1,7 @@
 package com.toy.chatapp.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -8,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
+    public void addCorsMappings(@NonNull CorsRegistry registry) {
         registry.addMapping("/**") // 모든 경로에 대해 CORS 허용
                 .allowedOrigins("*") // 모든 IP 허용
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE") // Header Method 타입 허용

@@ -48,6 +48,11 @@ React Native Encrypted Storge
 
 - npm i react-native-encrypted-storage
 
+Client State
+
+- client에서 자체적으로 만드는 state(최초 데이터 발생지가 클라이언트)
+- server에서 전달받은 값으로 만드는 state (최초 데이터의 발생지가 서버)
+
 React Query
 
 - npm install @tanstack/react-query
