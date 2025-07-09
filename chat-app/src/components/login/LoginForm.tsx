@@ -15,8 +15,8 @@ import {useLogin} from '../../hooks/useAuth';
 const schema = z.object({
   email: z
     .string()
-    .email('올바른 이메일 형식이 아닙니다.')
-    .nonempty('이메일을 입력해주세요.'),
+    .nonempty('이메일을 입력해주세요.')
+    .email('올바른 이메일 형식이 아닙니다.'),
   password: z.string().nonempty('비밀번호를 입력해 주세요.'),
 });
 
@@ -29,7 +29,7 @@ export default function LoginForm() {
     control,
     handleSubmit,
     formState: {errors},
-  } = useForm<LoginData>({resolver: zodResolver(schema)});
+  } = useForm<LoginData>({resolver: zodResolver(schema), mode: 'onTouched'});
 
   const onSubmit = (data: LoginData) => {
     loginMutation.mutate(data);
@@ -52,7 +52,7 @@ export default function LoginForm() {
         )}
       />
       {errors.email && (
-        <Text style={{color: 'red'}}>{errors.email.message}</Text>
+        <Text style={styles.errorText}>{errors.email.message}</Text>
       )}
 
       <Controller
@@ -70,6 +70,9 @@ export default function LoginForm() {
           />
         )}
       />
+      {errors.password && (
+        <Text style={styles.errorText}>{errors.password.message}</Text>
+      )}
 
       <TouchableOpacity
         style={styles.loginButton}
@@ -102,5 +105,13 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  errorText: {
+    color: '#D32F2F',
+    marginTop: -12,
+    marginBottom: 8,
+    fontSize: 13,
+    fontWeight: '500',
+    paddingLeft: 4,
   },
 });
