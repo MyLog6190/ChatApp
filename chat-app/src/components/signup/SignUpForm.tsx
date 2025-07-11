@@ -11,15 +11,31 @@ import {
   StyleSheet,
 } from 'react-native';
 import {zodResolver} from '@hookform/resolvers/zod';
+import {useSignup} from '../../hooks/useAuth';
 
-const schema = z.object({
-  email: z
-    .string()
-    .nonempty('이메일을 입력해 주세요.')
-    .email('이메일 형식이 아닙니다.'),
-
-  code: z.string().length(6),
-});
+const schema = z
+  .object({
+    email: z
+      .string()
+      .nonempty('이메일을 입력해 주세요.')
+      .email('이메일 형식이 아닙니다.'),
+    code: z.string().length(6, '인증 코드는 6자리여야 합니다.'),
+    name: z.string().nonempty('이름을 입력해 주세요.'),
+    password: z
+      .string()
+      .nonempty('비밀번호를 입력해 주세요.')
+      .min(8, '비밀번호는 최소 8자 이상이어야 합니다.')
+      .max(32, '비밀번호는 최대 32자까지 가능합니다.'),
+    confirmPassword: z
+      .string()
+      .nonempty('비밀번호를 다시 입력해 주세요.')
+      .min(8, '비밀번호는 최소 8자 이상이어야 합니다.')
+      .max(32, '비밀번호는 최대 32자까지 가능합니다.'),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: '비밀번호가 일치하지 않습니다.',
+    path: ['confirmPassword'],
+  });
 
 type signupDate = z.infer<typeof schema>;
 
@@ -29,6 +45,13 @@ export default function SignupForm() {
     handleSubmit,
     formState: {errors},
   } = useForm<signupDate>({resolver: zodResolver(schema), mode: 'onTouched'});
+  const signupMutate = useSignup();
+
+  const onSubmit = (data: any) => {
+    console.log(data);
+    signupMutate.mutate(data);
+  };
+  console.log(errors.confirmPassword?.message);
 
   return (
     <View style={styles.innerContainer}>
@@ -36,48 +59,112 @@ export default function SignupForm() {
         source={require('../../assets/logo-white.png')}
         style={styles.logo}
       />
-
       <Text style={styles.welcomeText}>회원가입을 진행해 주세요</Text>
-
-      <View style={styles.inputRow}>
-        <TouchableOpacity style={styles.verifyButton}>
-          <Text style={styles.verifyButtonText}>인증 요청</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.inputRow}>
-        <TextInput
-          placeholder="인증 코드를 입력하세요."
-          placeholderTextColor="#B0885A"
-          keyboardType="number-pad"
-          style={styles.flexInput}
-        />
-        <TouchableOpacity style={styles.verifyButton}>
-          <Text style={styles.verifyButtonText}>확인</Text>
-        </TouchableOpacity>
-      </View>
-
-      <TextInput
-        placeholder="이름을 입력하세요."
-        placeholderTextColor="#B0885A"
-        style={styles.input}
+      <Controller
+        control={control}
+        name="email"
+        render={({field: {onChange, onBlur, value}}) => (
+          <View style={styles.inputRow}>
+            <TextInput
+              placeholder="이메일를 입력하세요."
+              placeholderTextColor="#B0885A"
+              style={styles.flexInput}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+            <TouchableOpacity style={styles.verifyButton}>
+              <Text style={styles.verifyButtonText}>인증 요청</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       />
+      {errors.email && (
+        <Text style={styles.errorText}>{errors.email.message}</Text>
+      )}
 
-      <TextInput
-        placeholder="비밀번호를 입력하세요."
-        placeholderTextColor="#B0885A"
-        secureTextEntry
-        style={styles.input}
+      <Controller
+        control={control}
+        name="code"
+        render={({field: {onChange, onBlur, value}}) => (
+          <View style={styles.inputRow}>
+            <TextInput
+              placeholder="인증 코드를 입력하세요."
+              placeholderTextColor="#B0885A"
+              keyboardType="number-pad"
+              style={styles.flexInput}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+            <TouchableOpacity style={styles.verifyButton}>
+              <Text style={styles.verifyButtonText}>확인</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       />
+      {errors.code && (
+        <Text style={styles.errorText}>{errors.code.message}</Text>
+      )}
 
-      <TextInput
-        placeholder="비밀번호를 다시 입력하세요."
-        placeholderTextColor="#B0885A"
-        secureTextEntry
-        style={styles.input}
+      <Controller
+        control={control}
+        name="name"
+        render={({field: {onChange, onBlur, value}}) => (
+          <TextInput
+            placeholder="이름을 입력하세요."
+            placeholderTextColor="#B0885A"
+            style={styles.input}
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+          />
+        )}
       />
+      {errors.name && (
+        <Text style={styles.errorText}>{errors.name.message}</Text>
+      )}
 
-      <TouchableOpacity style={styles.signupButton}>
+      <Controller
+        control={control}
+        name="password"
+        render={({field: {onChange, onBlur, value}}) => (
+          <TextInput
+            placeholder="비밀번호를 입력하세요."
+            placeholderTextColor="#B0885A"
+            secureTextEntry
+            style={styles.input}
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+          />
+        )}
+      />
+      {errors.password && (
+        <Text style={styles.errorText}>{errors.password.message}</Text>
+      )}
+
+      <Controller
+        control={control}
+        name="confirmPassword"
+        render={({field: {onChange, onBlur, value}}) => (
+          <TextInput
+            placeholder="비밀번호를 다시 입력하세요."
+            placeholderTextColor="#B0885A"
+            secureTextEntry
+            style={styles.input}
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+          />
+        )}
+      />
+      {errors.confirmPassword && (
+        <Text style={styles.errorText}>{errors.confirmPassword.message}</Text>
+      )}
+      <TouchableOpacity
+        style={styles.signupButton}
+        onPress={handleSubmit(onSubmit)}>
         <Text style={styles.signupButtonText}>회원가입</Text>
       </TouchableOpacity>
     </View>
@@ -154,5 +241,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
     textAlign: 'center',
+  },
+  errorText: {
+    color: '#D32F2F',
+    marginTop: -12,
+    marginBottom: 8,
+    fontSize: 13,
+    fontWeight: '500',
+    paddingLeft: 4,
   },
 });
