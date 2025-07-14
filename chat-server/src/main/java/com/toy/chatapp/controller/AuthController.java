@@ -26,8 +26,6 @@ public class AuthController {
 
     private final AuthService authService;
 
-    private final MailServiceFactory mailServiceFactory;
-
     @PostMapping("/login")
     public void login(@RequestBody String a) {
 
@@ -38,16 +36,12 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public void signUp(@RequestBody SignUpRequestDto body) {
-        authService.signup(body);
+    public ResponseEntity<ApiResponse<Void>> signUp(@RequestBody SignUpRequestDto body) {
+        return authService.signup(body);
     }
 
     @PostMapping("/send-email")
     public ResponseEntity<ApiResponse<Void>> sendEmail(@RequestBody String body) {
-        MailService service = mailServiceFactory.getService(EmailType.VERIFICATION);
-        Map<String, Object> map = new HashMap<>();
-        service.send("", (HashMap<String, Object>) map);
-
-        return ResponseEntity.ok(ApiResponse.success(null));
+        return authService.sendEmail();
     }
 }

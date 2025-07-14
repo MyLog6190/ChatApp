@@ -44,7 +44,17 @@ export default function SignupForm() {
     control,
     handleSubmit,
     formState: {errors},
-  } = useForm<signupDate>({resolver: zodResolver(schema), mode: 'onTouched'});
+  } = useForm<signupDate>({
+    resolver: zodResolver(schema),
+    mode: 'onTouched',
+    defaultValues: {
+      email: '',
+      code: '',
+      name: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
   const signupMutate = useSignup();
 
   const onSubmit = (data: any) => {
