@@ -10,6 +10,7 @@ import lombok.Getter;
 @Entity
 @Getter
 public class BlockUser {
+
     @Id
     @GeneratedValue
     private Long id;

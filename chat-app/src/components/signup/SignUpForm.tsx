@@ -97,7 +97,7 @@ export default function SignupForm() {
               onChangeText={onChange}
               value={value}
             />
-            <TouchableOpacity style={styles.verifyButton}>
+            <TouchableOpacity style={styles.verifyButton} onPress={() => {}}>
               <Text style={styles.verifyButtonText}>확인</Text>
             </TouchableOpacity>
           </View>

@@ -5,20 +5,20 @@ import {SignupRequest} from '../types/domain/req/signup.request';
 import api from './axios';
 
 export const login = async (data: LoginRequest): Promise<AxiosResponse> => {
-  const response = await api.post('/auth/login', data);
+  const response = await api.post('/auth/v1/login', data);
   return response;
 };
 
 export const signup = async (data: SignupRequest): Promise<AxiosResponse> => {
-  const response = await api.post('/auth/signup', data);
+  const response = await api.post('/auth/v1/signup', data);
   return response;
 };
 
 export const sendVerificationEmail = async (
   data: SendEmailRequest,
 ): Promise<AxiosResponse> => {
-  const response = await api.post('/auth/send/verification-mail', data);
-  return response.data;
+  const response = await api.post('/auth/v1/send/verification-email', data);
+  return response;
 };
 
 export const logout = async (path: string) => {};
