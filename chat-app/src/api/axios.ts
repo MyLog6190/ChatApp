@@ -1,9 +1,10 @@
 import axios from 'axios';
 // import dotenv from 'dotenv';
-import Config from 'react-native-config';
-const baseURL = Config.API_BASE_URL;
+import {API_BASE_URL} from '@env';
 
-console.log(baseURL);
+const baseURL = API_BASE_URL;
+
+console.log('[API]', API_BASE_URL); // 찍히면 성공
 
 // dotenv.config(); Windows에서 경로를 못 찾음
 // const baseURL: string | undefined = API_BASE_URL;

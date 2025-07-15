@@ -63,7 +63,6 @@ export default function SignupForm() {
     console.log(data);
     signupMutate.mutate(data);
   };
-  console.log(errors.confirmPassword?.message);
 
   const email = useWatch({
     control,
