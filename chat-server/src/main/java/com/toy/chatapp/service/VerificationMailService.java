@@ -10,6 +10,8 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import com.toy.chatapp.annotation.MailStrategy;
+import com.toy.chatapp.common.exception.ChatException;
+import com.toy.chatapp.common.exception.ErrorCode;
 import com.toy.chatapp.enums.EmailType;
 
 import jakarta.mail.MessagingException;
@@ -31,20 +33,20 @@ public class VerificationMailService implements MailService {
         try {
             Context context = new Context(Locale.KOREA);
             context.setVariables(params);
-            String html = templateEngine.process("email/verify", context); // ✔ 템플릿 하드코딩
+            String html = templateEngine.process("email/verify", context);
 
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
             helper.setTo(to);
-            helper.setSubject("이메일 인증 안내"); // ✔ 제목 하드코딩
+            helper.setSubject("이메일 인증 코드");
             helper.setText(html, true);
 
             mailSender.send(message);
         } catch (MessagingException e) {
             log.error("메일 생성 또는 전송 실패", e);
+            throw new ChatException(ErrorCode.MAIL_500);
         }
-
     }
 
 }

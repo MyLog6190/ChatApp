@@ -29,7 +29,14 @@ export default function LoginForm() {
     control,
     handleSubmit,
     formState: {errors},
-  } = useForm<LoginData>({resolver: zodResolver(schema), mode: 'onTouched'});
+  } = useForm<LoginData>({
+    resolver: zodResolver(schema),
+    mode: 'onTouched',
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
 
   const onSubmit = (data: LoginData) => {
     loginMutation.mutate(data);

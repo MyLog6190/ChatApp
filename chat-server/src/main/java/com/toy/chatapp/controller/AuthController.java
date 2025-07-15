@@ -1,10 +1,6 @@
 package com.toy.chatapp.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailAuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,10 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.toy.chatapp.common.response.ApiResponse;
 import com.toy.chatapp.dto.SignUpRequestDto;
-import com.toy.chatapp.enums.EmailType;
-import com.toy.chatapp.factory.MailServiceFactory;
+import com.toy.chatapp.dto.VerifyEmailRequestDto;
 import com.toy.chatapp.service.AuthService;
-import com.toy.chatapp.service.MailService;
 
 import lombok.AllArgsConstructor;
 
@@ -37,11 +31,14 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<Void>> signUp(@RequestBody SignUpRequestDto body) {
-        return authService.signup(body);
+
+        authService.signup(body);
+        return null;
     }
 
     @PostMapping("/send-email")
-    public ResponseEntity<ApiResponse<Void>> sendEmail(@RequestBody String body) {
-        return authService.sendEmail();
+    public ResponseEntity<ApiResponse<Void>> sendEmail(@RequestBody VerifyEmailRequestDto body) {
+        authService.sendEmail(body.getEmail());
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 }

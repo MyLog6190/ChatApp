@@ -2,6 +2,7 @@ package com.toy.chatapp.service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -29,16 +30,14 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public ResponseEntity<ApiResponse<Void>> sendEmail() {
-        try {
-            MailService service = mailServiceFactory.getService(EmailType.VERIFICATION);
-            Map<String, Object> map = new HashMap<>();
-            service.send("", (HashMap<String, Object>) map);
+    public void sendEmail(String to) {
+        Random random = new Random();
+        int code = 100000 + random.nextInt(900000);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("code", code);
 
-            return null;
-        } catch (Exception e) {
-            log.error(null, e);
-            return null;
-        }
+        MailService mailService = mailServiceFactory.getService(EmailType.VERIFICATION);
+        mailService.send(to, (HashMap<String, Object>) map);
     }
+
 }

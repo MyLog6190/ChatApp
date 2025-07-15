@@ -16,7 +16,7 @@ public class FriendUser {
 
     private Long userId;
 
-    private User friendUser;
+    private Long friendUser;
 
     private LocalDateTime friendConnectedAt;
 }

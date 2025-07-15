@@ -23,7 +23,7 @@ public class BlockUser {
      * ? 어느쪽이 더 효율적인지?
      * ? 아니면 DTO를 만들어 처리할지
      */
-    private User blockId;
+    private Long blockId;
 
     private LocalDateTime blockedAt;
 

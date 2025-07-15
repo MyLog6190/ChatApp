@@ -1,22 +1,22 @@
 package com.toy.chatapp.entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import com.toy.chatapp.enums.UserRole;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 
 @Entity
 @Getter
+@Table(name = "users")
 public class User {
 
     @Id
@@ -32,14 +32,8 @@ public class User {
 
     private String name;
 
-    @Embedded // ENTITY에서 ENUM 사용할 때 사용
+    @Enumerated(EnumType.STRING) // ENTITY에서 ENUM 사용할 때 사용
     private UserRole role;
-
-    @OneToMany
-    private List<FriendUser> friends = new ArrayList<>();
-
-    @OneToMany
-    private List<BlockUser> blockUsers = new ArrayList<>();
 
     private LocalDateTime createAt;
 

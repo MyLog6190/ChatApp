@@ -13,8 +13,8 @@ public class ChatMember {
     @Id
     @GeneratedValue
     private Long id;
-    private User user;
-    private ChatRoom chatRoom;
+    private Long userId;
+    private Long chatRoomId;
     private LocalDateTime joinedAt;
 
 }

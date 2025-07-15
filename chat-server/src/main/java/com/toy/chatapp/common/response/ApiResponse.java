@@ -15,7 +15,7 @@ public class ApiResponse<T> {
         return new ApiResponse<>(true, "요청 성공", data);
     }
 
-    public static <T> ApiResponse<T> fail(String message) {
+    public static <T> ApiResponse<T> fail(String message, String code) {
         return new ApiResponse<>(false, message, null);
     }
 

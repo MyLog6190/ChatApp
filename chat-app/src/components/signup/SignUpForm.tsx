@@ -1,6 +1,6 @@
 // components/SignupForm.tsx
 import React from 'react';
-import {Controller, useForm} from 'react-hook-form';
+import {Controller, useForm, useWatch} from 'react-hook-form';
 import {z} from 'zod';
 import {
   View,
@@ -11,7 +11,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {useSignup} from '../../hooks/useAuth';
+import {useSendEmali, useSignup} from '../../hooks/useAuth';
 
 const schema = z
   .object({
@@ -55,13 +55,25 @@ export default function SignupForm() {
       confirmPassword: '',
     },
   });
+
   const signupMutate = useSignup();
+  const sendEmailMutate = useSendEmali();
 
   const onSubmit = (data: any) => {
     console.log(data);
     signupMutate.mutate(data);
   };
   console.log(errors.confirmPassword?.message);
+
+  const email = useWatch({
+    control,
+    name: 'email',
+  });
+
+  const sendEmail = (email: string) => {
+    console.log(email);
+    sendEmailMutate.mutate({email});
+  };
 
   return (
     <View style={styles.innerContainer}>
@@ -83,7 +95,11 @@ export default function SignupForm() {
               onChangeText={onChange}
               value={value}
             />
-            <TouchableOpacity style={styles.verifyButton}>
+            <TouchableOpacity
+              style={styles.verifyButton}
+              onPress={() => {
+                sendEmail(email);
+              }}>
               <Text style={styles.verifyButtonText}>인증 요청</Text>
             </TouchableOpacity>
           </View>
@@ -107,7 +123,9 @@ export default function SignupForm() {
               onChangeText={onChange}
               value={value}
             />
-            <TouchableOpacity style={styles.verifyButton} onPress={() => {}}>
+            <TouchableOpacity
+              style={styles.verifyButton}
+              onPress={() => sendEmail(email)}>
               <Text style={styles.verifyButtonText}>확인</Text>
             </TouchableOpacity>
           </View>

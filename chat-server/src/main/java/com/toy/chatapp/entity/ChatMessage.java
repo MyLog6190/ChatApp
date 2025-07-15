@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import com.toy.chatapp.enums.MessageType;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.Getter;
@@ -17,8 +19,9 @@ public class ChatMessage {
     @GeneratedValue
     private Long id;
 
-    private User sender;
-    private ChatRoom chatRoom;
+    private Long sender;
+    private Long chatRoomId;
+    @Enumerated(EnumType.STRING)
     private MessageType messageType;
     private String content;
 

@@ -1,6 +1,6 @@
 import {useMutation, UseMutationOptions, useQuery} from '@tanstack/react-query';
 import {useEffect} from 'react';
-import {login, signup} from '../api/auth';
+import {login, sendVerificationEmail, signup} from '../api/auth';
 import {removeEncryptedStorage} from '../utils/encryptStorage';
 import {removeHeader, setHeader} from '../utils/header';
 
@@ -13,6 +13,20 @@ export const useSignup = (mutationOprions?: UseMuatatioinCustomOptions) => {
   return useMutation({
     mutationFn: signup,
     ...mutationOprions,
+    onSuccess: ({data}) => {},
+  });
+};
+
+export const useSendEmali = (mutationOprions?: UseMuatatioinCustomOptions) => {
+  return useMutation({
+    mutationFn: sendVerificationEmail,
+    ...mutationOprions,
+    onSuccess: ({data}) => {
+      console.log(data);
+    },
+    onError: err => {
+      console.error(err);
+    },
   });
 };
 
