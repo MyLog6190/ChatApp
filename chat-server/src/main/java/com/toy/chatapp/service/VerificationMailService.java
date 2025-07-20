@@ -1,5 +1,6 @@
 package com.toy.chatapp.service;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -33,15 +34,18 @@ public class VerificationMailService implements MailService {
         try {
             Context context = new Context(Locale.KOREA);
             context.setVariables(params);
+
+            System.out.println(getClass().getClassLoader().getResource("templates/email/verify.html"));
+
             String html = templateEngine.process("email/verify", context);
 
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
+            helper.setFrom("chat-app@gmail.com");
             helper.setTo(to);
             helper.setSubject("이메일 인증 코드");
             helper.setText(html, true);
-
             mailSender.send(message);
         } catch (MessagingException e) {
             log.error("메일 생성 또는 전송 실패", e);

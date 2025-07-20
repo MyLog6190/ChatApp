@@ -27,8 +27,8 @@ spring:
     username: ${GMAIL}
     password: ${GMAIL_PASSWORD}
     properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
+      "[mail.smtp.auth]": true
+      "[mail.smtp.starttls.enable]": true
 
 springdoc:
   swagger-ui:
@@ -36,5 +36,9 @@ springdoc:
     operations-sorter: method
   default-produces-media-type: application/json
   default-consumes-media-type: application/json
+
+# logging:
+#   level:
+#     "[org.thymeleaf]": DEBUG
 
 secretKey: jwt-token-create-secret-key-in-chat-app

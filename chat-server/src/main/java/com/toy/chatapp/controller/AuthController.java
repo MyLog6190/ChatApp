@@ -38,6 +38,8 @@ public class AuthController {
 
     @PostMapping("/send-email")
     public ResponseEntity<ApiResponse<Void>> sendEmail(@RequestBody VerifyEmailRequestDto body) {
+        System.out.println("실행 : ----");
+        System.out.println(body.getEmail());
         authService.sendEmail(body.getEmail());
         return ResponseEntity.ok(ApiResponse.success(null));
     }

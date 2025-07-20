@@ -1,13 +1,10 @@
 package com.toy.chatapp.service;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.toy.chatapp.common.response.ApiResponse;
 import com.toy.chatapp.dto.SignUpRequestDto;
 import com.toy.chatapp.entity.User;
 import com.toy.chatapp.enums.EmailType;
