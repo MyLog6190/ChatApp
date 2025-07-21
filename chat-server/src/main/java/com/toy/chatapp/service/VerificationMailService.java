@@ -42,7 +42,6 @@ public class VerificationMailService implements MailService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            helper.setFrom("chat-app@gmail.com");
             helper.setTo(to);
             helper.setSubject("이메일 인증 코드");
             helper.setText(html, true);

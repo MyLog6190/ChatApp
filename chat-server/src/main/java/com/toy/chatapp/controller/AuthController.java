@@ -1,5 +1,9 @@
 package com.toy.chatapp.controller;
 
+import java.util.HashMap;
+import java.util.Random;
+
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,12 +11,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.toy.chatapp.common.response.ApiResponse;
+import com.toy.chatapp.common.util.ClientInfoUtil;
 import com.toy.chatapp.dto.SignUpRequestDto;
 import com.toy.chatapp.dto.VerifyEmailRequestDto;
 import com.toy.chatapp.service.AuthService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("/auth/v1")
@@ -36,11 +44,24 @@ public class AuthController {
         return null;
     }
 
-    @PostMapping("/send-email")
-    public ResponseEntity<ApiResponse<Void>> sendEmail(@RequestBody VerifyEmailRequestDto body) {
-        System.out.println("실행 : ----");
-        System.out.println(body.getEmail());
-        authService.sendEmail(body.getEmail());
-        return ResponseEntity.ok(ApiResponse.success(null));
+    @PostMapping(value = "/send-email", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponse<Object>> sendEmail(HttpServletRequest request,
+            @RequestBody VerifyEmailRequestDto body) {
+
+        String ip = ClientInfoUtil.getClientIP(request);
+        String userAgent = ClientInfoUtil.getUserAgent(request);
+
+        log.info("인증요청 - IP: {}, User-Agent: {}", ip, userAgent);
+
+        Random random = new Random();
+        int code = 100000 + random.nextInt(900000);
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("code", code);
+
+        authService.sendEmail(body.getEmail(), (HashMap<String, Object>) map, body.getType());
+
+        return ResponseEntity.ok(ApiResponse.success(null)); // 또는 success()
     }
+
 }

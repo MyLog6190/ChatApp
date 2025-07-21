@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useSendEmali, useSignup} from '../../hooks/useAuth';
+import {EmailType} from '../../constants/EmailType';
 
 const schema = z
   .object({
@@ -69,9 +70,9 @@ export default function SignupForm() {
     name: 'email',
   });
 
-  const sendEmail = (email: string) => {
+  const sendEmail = (email: string, type: EmailType) => {
     console.log(email);
-    sendEmailMutate.mutate({email});
+    sendEmailMutate.mutate({email, type});
   };
 
   return (
@@ -97,7 +98,7 @@ export default function SignupForm() {
             <TouchableOpacity
               style={styles.verifyButton}
               onPress={() => {
-                sendEmail(email);
+                sendEmail(email, EmailType.VERIFICATION);
               }}>
               <Text style={styles.verifyButtonText}>인증 요청</Text>
             </TouchableOpacity>
@@ -122,9 +123,7 @@ export default function SignupForm() {
               onChangeText={onChange}
               value={value}
             />
-            <TouchableOpacity
-              style={styles.verifyButton}
-              onPress={() => sendEmail(email)}>
+            <TouchableOpacity style={styles.verifyButton} onPress={() => {}}>
               <Text style={styles.verifyButtonText}>확인</Text>
             </TouchableOpacity>
           </View>

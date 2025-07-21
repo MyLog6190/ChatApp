@@ -11,6 +11,7 @@ import lombok.Getter;
 @Entity
 @Getter
 public class EmailVerification {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

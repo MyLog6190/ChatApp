@@ -4,12 +4,12 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://${SERVER_IP}:3306/chatdb
-    username: chat_app
-    password: chatapp
-    # url: jdbc:h2:tcp://192.168.0.62/C:/Workspace/h2/chatdb
-    # username: sa
-    # password:
+    # url: jdbc:mysql://${SERVER_IP}:3306/chatdb
+    # username: chat_app
+    # password: chatapp
+    url: jdbc:h2:tcp://192.168.0.62/C:/Workspace/h2/chatdb
+    username: sa
+    password:
 
   jpa:
     hibernate:
@@ -18,7 +18,8 @@ spring:
 
   data:
     redis:
-      host: ${SERVER_IP}
+      # host: ${SERVER_IP}
+      host: localhost
       port: 6379
 
   mail:
