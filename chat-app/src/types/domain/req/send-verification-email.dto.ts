@@ -1,4 +1,4 @@
-import {EmailType} from '../../../constants/EmailType';
+import {EmailType} from '../../../constants/email-type';
 
 export interface SendEmailRequest {
   email: string;

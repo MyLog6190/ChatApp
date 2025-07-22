@@ -48,11 +48,6 @@ public class AuthController {
     public ResponseEntity<ApiResponse<Object>> sendEmail(HttpServletRequest request,
             @RequestBody VerifyEmailRequestDto body) {
 
-        String ip = ClientInfoUtil.getClientIP(request);
-        String userAgent = ClientInfoUtil.getUserAgent(request);
-
-        log.info("인증요청 - IP: {}, User-Agent: {}", ip, userAgent);
-
         Random random = new Random();
         int code = 100000 + random.nextInt(900000);
 
@@ -62,6 +57,11 @@ public class AuthController {
         authService.sendEmail(body.getEmail(), (HashMap<String, Object>) map, body.getType());
 
         return ResponseEntity.ok(ApiResponse.success(null)); // 또는 success()
+
     }
 
+    @PostMapping("/verify-email")
+    public ResponseEntity<ApiResponse<Object>> verifyEmail(@RequestBody String body) {
+        return null;
+    }
 }

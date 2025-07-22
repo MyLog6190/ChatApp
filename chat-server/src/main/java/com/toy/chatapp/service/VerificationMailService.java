@@ -1,6 +1,5 @@
 package com.toy.chatapp.service;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -14,6 +13,7 @@ import com.toy.chatapp.annotation.MailStrategy;
 import com.toy.chatapp.common.exception.ChatException;
 import com.toy.chatapp.common.exception.ErrorCode;
 import com.toy.chatapp.enums.EmailType;
+import com.toy.chatapp.repository.redis.EmailVerificationCodeRedisRepository;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -28,6 +28,7 @@ public class VerificationMailService implements MailService {
 
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
+    private final EmailVerificationCodeRedisRepository emailVerificationCodeRedisRepository;
 
     @Override
     public void send(String to, HashMap<String, Object> params) {
@@ -45,6 +46,9 @@ public class VerificationMailService implements MailService {
             helper.setTo(to);
             helper.setSubject("이메일 인증 코드");
             helper.setText(html, true);
+
+            emailVerificationCodeRedisRepository.save(to, (String) params.get("code"));
+
             mailSender.send(message);
         } catch (MessagingException e) {
             log.error("메일 생성 또는 전송 실패", e);
