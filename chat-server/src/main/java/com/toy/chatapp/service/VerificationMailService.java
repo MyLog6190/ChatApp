@@ -47,8 +47,10 @@ public class VerificationMailService implements MailService {
             helper.setSubject("이메일 인증 코드");
             helper.setText(html, true);
 
-            emailVerificationCodeRedisRepository.save(to, (String) params.get("code"));
-
+            System.out.println(params.get("code").toString());
+            emailVerificationCodeRedisRepository.save(to, params.get("code").toString());
+            System.out.println(to);
+            System.out.println(emailVerificationCodeRedisRepository.find(to));
             mailSender.send(message);
         } catch (MessagingException e) {
             log.error("메일 생성 또는 전송 실패", e);

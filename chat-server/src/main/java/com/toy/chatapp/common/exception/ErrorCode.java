@@ -7,6 +7,7 @@ public enum ErrorCode {
     // 인증 관련
     AUTH_401("AUTH_401", "인증이 필요합니다.", HttpStatus.UNAUTHORIZED),
     AUTH_403("AUTH_403", "권한이 없습니다.", HttpStatus.FORBIDDEN),
+    INVALID_CODE("AUTH_422", "인증 코드가 유효하지 않거나 만료되었습니다.", HttpStatus.UNPROCESSABLE_ENTITY),
 
     // 사용자 관련
     USER_404("USER_404", "사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),

@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.toy.chatapp.common.response.ApiResponse;
-import com.toy.chatapp.common.util.ClientInfoUtil;
 import com.toy.chatapp.dto.SignUpRequestDto;
 import com.toy.chatapp.dto.VerifyEmailRequestDto;
+import com.toy.chatapp.dto.VerityCodeRequestDto;
 import com.toy.chatapp.service.AuthService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -60,8 +60,9 @@ public class AuthController {
 
     }
 
-    @PostMapping("/verify-email")
-    public ResponseEntity<ApiResponse<Object>> verifyEmail(@RequestBody String body) {
-        return null;
+    @PostMapping("/verify-code")
+    public ResponseEntity<ApiResponse<Object>> verifyEmailCode(@RequestBody VerityCodeRequestDto body) {
+        boolean confirm = authService.verifyEmailCode(body.getEmail(), body.getCode());
+        return ResponseEntity.ok(ApiResponse.success(confirm));
     }
 }

@@ -28,4 +28,7 @@ public class EmailVerificationCodeRedisRepository {
         redisTemplate.delete(PREEFIX + email);
     }
 
+    public Boolean exists(String email) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(PREEFIX + email));
+    }
 }

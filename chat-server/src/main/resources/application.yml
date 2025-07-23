@@ -19,7 +19,7 @@ spring:
   data:
     redis:
       # host: ${SERVER_IP}
-      host: localhost
+      host: host.docker.internal
       port: 6379
 
   mail:
@@ -27,11 +27,13 @@ spring:
     port: 587
     username: ${GMAIL}
     password: ${GMAIL_PASSWORD}
-    # username:
-    # password:
+
     properties:
       "[mail.smtp.auth]": true
       "[mail.smtp.starttls.enable]": true
+
+  config:
+    import: optional:file:.env
 
 springdoc:
   swagger-ui:
