@@ -1,4 +1,5 @@
 import {AxiosResponse} from 'axios';
+
 import {LoginRequest} from '../types/dto/req/auth/login.request';
 import {SignupRequest} from '../types/dto/req/auth/signup.request';
 import api from './axios';
@@ -28,6 +29,13 @@ export const sendVerificationEmail = async (
   data: SendEmailRequest,
 ): Promise<AxiosResponse> => {
   const response = await api.post(`${BASE_URL}/send-email`, data);
+  return response;
+};
+
+export const verifyCode = async (
+  data: VerifyCodeRequest,
+): Promise<AxiosResponse> => {
+  const response = await api.post(`${BASE_URL}/verify-code`, data);
   return response;
 };
 

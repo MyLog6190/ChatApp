@@ -13,7 +13,12 @@ export const useSignup = (mutationOprions?: UseMuatatioinCustomOptions) => {
   return useMutation({
     mutationFn: signup,
     ...mutationOprions,
-    onSuccess: ({data}) => {},
+    onSuccess: ({data}) => {
+      console.log(data);
+    },
+    onError: err => {
+      console.log(err);
+    },
   });
 };
 

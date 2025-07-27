@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import org.springframework.stereotype.Service;
 
+import com.toy.chatapp.common.exception.ChatException;
+import com.toy.chatapp.common.exception.ErrorCode;
 import com.toy.chatapp.dto.SignUpRequestDto;
 import com.toy.chatapp.entity.User;
 import com.toy.chatapp.enums.EmailType;
@@ -35,8 +37,22 @@ public class AuthService {
         mailService.send(to, messageMap);
     }
 
-    public boolean verifyEmail(String email, String code) {
-        emailVerificationCodeRedisRepository.find(email);
+    public boolean verifyEmailCode(String email, String code) {
+        log.info("email : {}, code : {}", email, code);
+
+        Boolean isExists = emailVerificationCodeRedisRepository.exists(email);
+        log.info("isExists : {} ", isExists);
+        if (!isExists)
+            throw new ChatException(ErrorCode.INVALID_CODE);
+
+        String savedCode = emailVerificationCodeRedisRepository.find(email);
+        log.info("Code : {}", savedCode);
+
+        System.out.println(savedCode.equals(code));
+
+        if (!savedCode.equals(code))
+            throw new ChatException(ErrorCode.INVALID_CODE);
+
         emailVerifiedStatusRedisRepository.save(email);
         return true;
     }
