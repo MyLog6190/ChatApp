@@ -1,8 +1,9 @@
 import {AxiosResponse} from 'axios';
-import {LoginRequest} from '../types/domain/req/login.request';
-import {SendEmailRequest} from '../types/domain/req/send-verification-email.dto';
-import {SignupRequest} from '../types/domain/req/signup.request';
+import {LoginRequest} from '../types/dto/req/auth/login.request';
+import {SignupRequest} from '../types/dto/req/auth/signup.request';
 import api from './axios';
+import {SendEmailRequest} from '../types/dto/req/auth/send-verification-email.dto';
+import {VerifyCodeRequest} from '../types/dto/req/auth/verify-code.request';
 
 const BASE_URL = 'auth/v1';
 
@@ -16,11 +17,16 @@ export const signup = async (data: SignupRequest): Promise<AxiosResponse> => {
   return response;
 };
 
+export const verifyCode = async (
+  data: VerifyCodeRequest,
+): Promise<AxiosResponse> => {
+  const response = await api.post(`${BASE_URL}/verify-code`, data);
+  return response;
+};
+
 export const sendVerificationEmail = async (
   data: SendEmailRequest,
 ): Promise<AxiosResponse> => {
-  console.log(BASE_URL);
-  console.log(`${BASE_URL}/send-email`);
   const response = await api.post(`${BASE_URL}/send-email`, data);
   return response;
 };

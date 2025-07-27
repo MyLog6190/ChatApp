@@ -75,6 +75,8 @@ export default function SignupForm() {
     sendEmailMutate.mutate({email, type});
   };
 
+  const verifyCode = () => {};
+
   return (
     <View style={styles.innerContainer}>
       <Image
