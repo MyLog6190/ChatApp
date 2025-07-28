@@ -8,6 +8,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class VerifyEmailRequestDto {
-    String email;
-    EmailType type;
+    private String email;
+    private EmailType type;
 }

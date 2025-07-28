@@ -14,7 +14,7 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {useSendEmali, useSignup, useVerifyCode} from '../../hooks/useAuth';
 import {EmailType} from '../../constants/email-type';
 
-const schema = z
+const signUpSchema = z
   .object({
     email: z
       .string()
@@ -38,15 +38,24 @@ const schema = z
     path: ['confirmPassword'],
   });
 
-type signupDate = z.infer<typeof schema>;
+export const verifyCodeSchema = z.object({
+  email: z
+    .string()
+    .nonempty('이메일을 입력해 주세요.')
+    .email('이메일 형식이 아닙니다.'),
+  code: z.string().length(6, '인증 코드는 6자리여야 합니다.'),
+});
+
+type signupDate = z.infer<typeof signUpSchema>;
 
 export default function SignupForm() {
   const {
     control,
     handleSubmit,
+    setError,
     formState: {errors},
   } = useForm<signupDate>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(signUpSchema),
     mode: 'onTouched',
     defaultValues: {
       email: '',
@@ -82,8 +91,26 @@ export default function SignupForm() {
   };
 
   const verifyCode = (email: string, code: string) => {
-    console.log(email, code);
-    verityCodeMutate.mutate({email, code});
+    const result = verityCodeMutate.mutate({
+      email,
+      code,
+    });
+
+    if (email) {
+    }
+  };
+
+  const verifiedCode = (email: string, code: string) => {
+    const result = verifyCodeSchema.safeParse({email, code});
+
+    if (!result.success) {
+      const {fieldErrors} = result.error.flatten();
+      setError('email', {message: fieldErrors.email?.[0]});
+      setError('code', {message: fieldErrors.code?.[0]});
+      return false;
+    }
+
+    return true;
   };
 
   return (

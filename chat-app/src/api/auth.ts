@@ -18,13 +18,6 @@ export const signup = async (data: SignupRequest): Promise<AxiosResponse> => {
   return response;
 };
 
-export const verifyCode = async (
-  data: VerifyCodeRequest,
-): Promise<AxiosResponse> => {
-  const response = await api.post(`${BASE_URL}/verify-code`, data);
-  return response;
-};
-
 export const sendVerificationEmail = async (
   data: SendEmailRequest,
 ): Promise<AxiosResponse> => {

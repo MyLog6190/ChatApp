@@ -1,5 +1,6 @@
 package com.toy.chatapp.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -44,16 +45,17 @@ public class VerificationMailService implements MailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
             helper.setTo(to);
-            helper.setSubject("이메일 인증 코드");
+            helper.setFrom("adg6190@gmail.com", "CHAT APP");
+            helper.setSubject("[CHAT APP] 이메일 인증 코드");
             helper.setText(html, true);
 
-            System.out.println(params.get("code").toString());
             emailVerificationCodeRedisRepository.save(to, params.get("code").toString());
-            System.out.println(to);
-            System.out.println(emailVerificationCodeRedisRepository.find(to));
             mailSender.send(message);
         } catch (MessagingException e) {
-            log.error("메일 생성 또는 전송 실패", e);
+            log.error("MessagingException", e);
+            throw new ChatException(ErrorCode.MAIL_500);
+        } catch (UnsupportedEncodingException e) {
+            log.error("UnsupportedEncodingException", e);
             throw new ChatException(ErrorCode.MAIL_500);
         }
     }

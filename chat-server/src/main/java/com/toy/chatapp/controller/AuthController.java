@@ -39,7 +39,6 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<Void>> signUp(@RequestBody SignUpRequestDto body) {
-
         authService.signup(body);
         return null;
     }
@@ -57,7 +56,6 @@ public class AuthController {
         authService.sendEmail(body.getEmail(), (HashMap<String, Object>) map, body.getType());
 
         return ResponseEntity.ok(ApiResponse.success(null)); // 또는 success()
-
     }
 
     @PostMapping("/verify-code")

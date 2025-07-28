@@ -41,6 +41,7 @@ export const useVerifyCode = (mutationOprions?: UseMuatatioinCustomOptions) => {
     ...mutationOprions,
     onSuccess: ({data}) => {
       console.log(data);
+      return data;
     },
     onError: err => {
       console.error(err);

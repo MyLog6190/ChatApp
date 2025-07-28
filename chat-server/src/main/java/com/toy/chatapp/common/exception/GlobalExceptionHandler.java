@@ -22,12 +22,12 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.fail(errorCode.getMessage(), errorCode.getCode()));
     }
 
-    // 실행하다가 내가 생각 못한 에러가 났을 때 생성
+    // 기타 모든 에러 -> 의도적으로 발생시킨 에러 제외한 모든 에러
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception ex) {
         log.error("Unhandled Exception", ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.fail("알 수 없는 서버 오류가 발생했습니다.", "COMMON_500"));
+                .body(ApiResponse.fail("서버 오류가 발생했습니다.", "COMMON_500"));
     }
 }

@@ -4,6 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class VerityCodeRequestDto {
-    String email;
-    String code;
+    private String email;
+    private String code;
 }
