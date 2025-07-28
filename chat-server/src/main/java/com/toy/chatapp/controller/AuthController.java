@@ -14,6 +14,7 @@ import com.toy.chatapp.common.response.ApiResponse;
 import com.toy.chatapp.dto.SignUpRequestDto;
 import com.toy.chatapp.dto.VerifyEmailRequestDto;
 import com.toy.chatapp.dto.VerityCodeRequestDto;
+import com.toy.chatapp.dto.VerityCodeResponseDto;
 import com.toy.chatapp.service.AuthService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,8 +40,9 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<Void>> signUp(@RequestBody SignUpRequestDto body) {
+        log.info("Signup request body {}", body.getPassword());
         authService.signup(body);
-        return null;
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 
     @PostMapping(value = "/send-email", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -60,7 +62,7 @@ public class AuthController {
 
     @PostMapping("/verify-code")
     public ResponseEntity<ApiResponse<Object>> verifyEmailCode(@RequestBody VerityCodeRequestDto body) {
-        boolean confirm = authService.verifyEmailCode(body.getEmail(), body.getCode());
-        return ResponseEntity.ok(ApiResponse.success(confirm));
+        VerityCodeResponseDto responseBody = authService.verifyEmailCode(body.getEmail(), body.getCode());
+        return ResponseEntity.ok(ApiResponse.success(responseBody));
     }
 }

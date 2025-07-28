@@ -3,6 +3,7 @@ import {useEffect} from 'react';
 import {login, sendVerificationEmail, signup, verifyCode} from '../api/auth';
 import {removeEncryptedStorage} from '../utils/encryptStorage';
 import {removeHeader, setHeader} from '../utils/header';
+import {any} from 'zod';
 
 type UseMuatatioinCustomOptions<TData = unknown, TVariables = unknown> = Omit<
   UseMutationOptions<TData, Error, TVariables, unknown>,
@@ -43,8 +44,9 @@ export const useVerifyCode = (mutationOprions?: UseMuatatioinCustomOptions) => {
       console.log(data);
       return data;
     },
-    onError: err => {
-      console.error(err);
+    onError: (err: any) => {
+      const {message, code} = err.response.data;
+      return {message, code};
     },
   });
 };

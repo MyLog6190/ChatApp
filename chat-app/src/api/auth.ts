@@ -10,26 +10,26 @@ const BASE_URL = 'auth/v1';
 
 export const login = async (data: LoginRequest): Promise<AxiosResponse> => {
   const response = await api.post(`${BASE_URL}/login`, data);
-  return response;
+  return response.data;
 };
 
 export const signup = async (data: SignupRequest): Promise<AxiosResponse> => {
   const response = await api.post(`${BASE_URL}/signup`, data);
-  return response;
+  return response.data;
 };
 
 export const sendVerificationEmail = async (
   data: SendEmailRequest,
 ): Promise<AxiosResponse> => {
   const response = await api.post(`${BASE_URL}/send-email`, data);
-  return response;
+  return response.data;
 };
 
 export const verifyCode = async (
   data: VerifyCodeRequest,
 ): Promise<AxiosResponse> => {
   const response = await api.post(`${BASE_URL}/verify-code`, data);
-  return response;
+  return response.data;
 };
 
 export const logout = async (path: string) => {};

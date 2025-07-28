@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = ex.getErrorCode();
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(ApiResponse.fail(errorCode.getMessage(), errorCode.getCode()));
+                .body(ApiResponse.fail(errorCode.getCode(), errorCode.getMessage()));
     }
 
     // 기타 모든 에러 -> 의도적으로 발생시킨 에러 제외한 모든 에러
@@ -28,6 +28,6 @@ public class GlobalExceptionHandler {
         log.error("Unhandled Exception", ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.fail("서버 오류가 발생했습니다.", "COMMON_500"));
+                .body(ApiResponse.fail("COMMON_500", "서버 오류가 발생했습니다."));
     }
 }

@@ -1,5 +1,11 @@
 package com.toy.chatapp.dto;
 
-public class VerityCodeResponseDto {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
+@AllArgsConstructor
+public class VerityCodeResponseDto {
+    private String email;
+    private String code;
 }

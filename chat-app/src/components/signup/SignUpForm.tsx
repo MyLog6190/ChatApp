@@ -1,5 +1,5 @@
 // components/SignupForm.tsx
-import React from 'react';
+import React, {useState} from 'react';
 import {Controller, useForm, useWatch} from 'react-hook-form';
 import {z} from 'zod';
 import {
@@ -69,6 +69,7 @@ export default function SignupForm() {
   const signupMutate = useSignup();
   const sendEmailMutate = useSendEmali();
   const verityCodeMutate = useVerifyCode();
+  const [isCodeVerified, setIsCodeVerified] = useState(false);
 
   const onSubmit = (data: any) => {
     console.log(data);
@@ -86,31 +87,39 @@ export default function SignupForm() {
   });
 
   const sendEmail = (email: string, type: EmailType) => {
-    console.log(email);
-    sendEmailMutate.mutate({email, type});
-  };
-
-  const verifyCode = (email: string, code: string) => {
-    const result = verityCodeMutate.mutate({
-      email,
-      code,
-    });
-
-    if (email) {
+    try {
+      sendEmailMutate.mutate({email, type});
+    } catch (error: any) {
+      console.log(error.response.data);
     }
   };
 
-  const verifiedCode = (email: string, code: string) => {
-    const result = verifyCodeSchema.safeParse({email, code});
+  const verifyCode = async (email: string, code: string) => {
+    try {
+      const result = await verityCodeMutate.mutateAsync({
+        email,
+        code,
+      });
 
-    if (!result.success) {
-      const {fieldErrors} = result.error.flatten();
-      setError('email', {message: fieldErrors.email?.[0]});
-      setError('code', {message: fieldErrors.code?.[0]});
-      return false;
+      if (result.data.email !== email) {
+        setError('email', {message: '인증 요청한 이메일이 아닙니다.'});
+      }
+
+      if (result.data.code !== code) {
+        setError('code', {
+          message: '인증 코드가 유효하지 않거나 만료되었습니다.',
+        });
+      }
+
+      setIsCodeVerified(result.data.code === code);
+    } catch (error: any) {
+      console.log(error.response.data);
+      if (error.response.data.code === 'AUTH_422') {
+        setError('code', {
+          message: error.response.data.message,
+        });
+      }
     }
-
-    return true;
   };
 
   return (
@@ -160,13 +169,24 @@ export default function SignupForm() {
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
+              editable={!isCodeVerified}
             />
             <TouchableOpacity
-              style={styles.verifyButton}
+              style={[
+                styles.verifyButton,
+                isCodeVerified && {backgroundColor: '#ccc'},
+              ]}
               onPress={() => {
                 verifyCode(email, code);
-              }}>
-              <Text style={styles.verifyButtonText}>확인</Text>
+              }}
+              disabled={isCodeVerified}>
+              <Text
+                style={[
+                  styles.verifyButtonText,
+                  isCodeVerified && {color: '#888'},
+                ]}>
+                {isCodeVerified ? '완료됨' : '확인'}
+              </Text>
             </TouchableOpacity>
           </View>
         )}

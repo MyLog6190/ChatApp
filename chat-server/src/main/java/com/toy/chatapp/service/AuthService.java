@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.toy.chatapp.common.exception.ChatException;
 import com.toy.chatapp.common.exception.ErrorCode;
 import com.toy.chatapp.dto.SignUpRequestDto;
+import com.toy.chatapp.dto.VerityCodeResponseDto;
 import com.toy.chatapp.entity.User;
 import com.toy.chatapp.enums.EmailType;
 import com.toy.chatapp.factory.MailServiceFactory;
@@ -28,7 +29,7 @@ public class AuthService {
     private final EmailVerifiedStatusRedisRepository emailVerifiedStatusRedisRepository;
 
     public void signup(SignUpRequestDto body) {
-        User user = new User(body.getEmail(), body.getPasssword(), body.getName(), body.getRole());
+        User user = new User(body.getEmail(), body.getPassword(), body.getName(), body.getRole());
         userRepository.save(user);
     }
 
@@ -37,7 +38,7 @@ public class AuthService {
         mailService.send(to, messageMap);
     }
 
-    public boolean verifyEmailCode(String email, String code) {
+    public VerityCodeResponseDto verifyEmailCode(String email, String code) {
         log.info("email : {}, code : {}", email, code);
 
         Boolean isExists = emailVerificationCodeRedisRepository.exists(email);
@@ -46,14 +47,14 @@ public class AuthService {
             throw new ChatException(ErrorCode.INVALID_CODE);
 
         String savedCode = emailVerificationCodeRedisRepository.find(email);
-        log.info("Code : {}", savedCode);
-
-        System.out.println(savedCode.equals(code));
 
         if (!savedCode.equals(code))
             throw new ChatException(ErrorCode.INVALID_CODE);
 
         emailVerifiedStatusRedisRepository.save(email);
-        return true;
+
+        VerityCodeResponseDto responseDto = new VerityCodeResponseDto(email, code);
+
+        return responseDto;
     }
 }
