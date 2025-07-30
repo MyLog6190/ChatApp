@@ -4,9 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.toy.chatapp.enums.UserRole;
 
@@ -17,10 +15,12 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 
 @Entity
 @Getter
+@Table(name = "users")
 public class User {
 
     @Id
@@ -44,11 +44,9 @@ public class User {
 
     private LocalDateTime updateAt = LocalDateTime.now();
 
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
     public User(String email, String password, String name, UserRole role) {
         this.email = email;
-        this.password = encoder.encode(password);
+        this.password = password;
         this.name = name;
         this.role = role;
     }
