@@ -1,3 +1,4 @@
+```
 src
 └── main
 ├── java/com/example/chatapp
@@ -13,3 +14,4 @@ src
 └── resources
 ├── application.yml
 └── static/ (필요 시)
+```

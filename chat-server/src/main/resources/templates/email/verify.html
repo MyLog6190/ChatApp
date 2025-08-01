@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CHAT APP 이메일 인증</title>
+  </head>
+  <body
+    style="
+      background-color: #fff7f0;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    "
+  >
+    <div
+      style="
+        max-width: 480px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+        text-align: center;
+      "
+    >
+      <div
+        style="
+          font-size: 24px;
+          color: #6b3e26;
+          margin-bottom: 12px;
+          font-weight: bold;
+        "
+      >
+        📩 CHAT APP 이메일 인증
+      </div>
+      <div style="font-size: 15px; color: #8a5c3a; margin-bottom: 32px">
+        아래 인증 코드를 앱에 입력해 주세요.
+      </div>
+      <div
+        style="
+          font-size: 28px;
+          font-weight: bold;
+          background-color: #fdebd2;
+          color: #6b3e26;
+          padding: 16px 24px;
+          border-radius: 12px;
+          display: inline-block;
+          letter-spacing: 6px;
+          margin-bottom: 32px;
+        "
+        th:text="${code}"
+      >
+        123456
+      </div>
+      <div style="font-size: 12px; color: #a28768; margin-top: 40px">
+        본 메일은 <strong>CHAT APP</strong> 서비스에서 발송된 인증
+        메일입니다.<br />
+        궁금한 점은 앱 내 고객센터를 이용해 주세요.
+      </div>
+    </div>
+  </body>
+</html>
