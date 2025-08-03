@@ -8,6 +8,7 @@ public enum ErrorCode {
     AUTH_401("AUTH_401", "인증이 필요합니다.", HttpStatus.UNAUTHORIZED),
     AUTH_403("AUTH_403", "권한이 없습니다.", HttpStatus.FORBIDDEN),
     INVALID_CODE("AUTH_422", "인증 코드가 유효하지 않거나 만료되었습니다.", HttpStatus.UNPROCESSABLE_ENTITY),
+    PASSWORD_MISMATCH("AUTH_422", "비밀번호가 일치하지 않습니다.", HttpStatus.UNPROCESSABLE_ENTITY),
     EMAIL_VERIFICATION_MISMATCH("AUTH_412", "이메일 인증 정보가 일치하지 않습니다.", HttpStatus.PRECONDITION_FAILED),
 
     // 사용자 관련

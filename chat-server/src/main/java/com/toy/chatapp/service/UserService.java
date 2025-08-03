@@ -1,5 +1,7 @@
 package com.toy.chatapp.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.toy.chatapp.entity.User;
@@ -16,6 +18,10 @@ public class UserService {
 
     public User save(User user) {
         return userRepository.save(user);
+    }
+
+    public Optional<User> findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public boolean emailExists(String email) {

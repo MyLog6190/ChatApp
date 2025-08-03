@@ -22,7 +22,8 @@ import jakarta.annotation.PostConstruct;
 public class JwtTokenProvider {
     @Value("${secretKey}")
     private String secretKey;
-    private long validTime = 1000 * 60 * 30;
+    private long accessTokenValidTime = 1000 * 60 * 30;
+    private long refreshTokenValidTime = 1000L * 60 * 60 * 24 * 7;
 
     private Key key;
 
@@ -32,15 +33,30 @@ public class JwtTokenProvider {
     }
 
     // 토큰 생성
-    public String createToken(UUID publicId, UserRole role) {
+    public String createToken(UUID publicId, String email, String name, UserRole role) {
         Claims claims = Jwts.claims().setSubject(publicId.toString());
+        claims.put("email", email);
+        claims.put("name", name);
         claims.put("role", role);
 
         Date now = new Date();
-        Date expirationTime = new Date(now.getTime() + validTime);
+        Date expirationTime = new Date(now.getTime() + accessTokenValidTime);
 
         return Jwts.builder().setClaims(claims).setIssuedAt(now).setExpiration(expirationTime)
                 .signWith(key, SignatureAlgorithm.HS256).compact();
+    }
+
+    // Refresh Token 생성
+    public String createRefreshToken(UUID publicId) {
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + refreshTokenValidTime);
+
+        return Jwts.builder()
+                .setSubject(publicId.toString())
+                .setIssuedAt(now)
+                .setExpiration(expiration)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
     }
 
     // UUID 추출
@@ -63,4 +79,5 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
 }

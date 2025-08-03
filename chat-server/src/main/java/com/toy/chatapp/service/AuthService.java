@@ -1,17 +1,23 @@
 package com.toy.chatapp.service;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.toy.chatapp.common.exception.ChatException;
 import com.toy.chatapp.common.exception.ErrorCode;
+import com.toy.chatapp.dto.SignInResponseDto;
+import com.toy.chatapp.dto.SignInRequestDto;
 import com.toy.chatapp.dto.SignUpRequestDto;
 import com.toy.chatapp.dto.VerityCodeResponseDto;
 import com.toy.chatapp.entity.User;
+import com.toy.chatapp.enums.AuthProvider;
 import com.toy.chatapp.enums.EmailType;
+import com.toy.chatapp.enums.UserRole;
 import com.toy.chatapp.factory.MailServiceFactory;
+import com.toy.chatapp.security.jwt.JwtTokenProvider;
 import com.toy.chatapp.service.redis.EmailVerificationCodeRedisService;
 import com.toy.chatapp.service.redis.EmailVerifiedStatusRedisService;
 
@@ -28,9 +34,32 @@ public class AuthService {
     private final EmailVerificationCodeRedisService emailVerificationCodeRedisService;
     private final EmailVerifiedStatusRedisService emailVerifiedStatusRedisService;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public SignInResponseDto signIn(SignInRequestDto body) {
+        String email = emailFormat(body.getEmail());
+        String password = body.getPassword();
+
+        User user = userService.findUserByEmail(email)
+                .orElseThrow(() -> new ChatException(ErrorCode.USER_404));
+
+        if (!matchPassword(password, user.getPassword())) {
+            throw new ChatException(ErrorCode.AUTH_401);
+        }
+
+        String accessToken = jwtTokenProvider.createToken(user.getPublicId(), user.getEmail(), user.getName(),
+                user.getRole());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getPublicId());
+
+        SignInResponseDto responseDto = new SignInResponseDto(accessToken, refreshToken);
+
+        return responseDto;
+
+    }
 
     public void signup(SignUpRequestDto body) {
-        String email = body.getEmail();
+        String email = emailFormat(body.getEmail());
+
         if (userService.emailExists(email))
             throw new ChatException(ErrorCode.EMAIL_DUPLICATE);
 
@@ -40,13 +69,15 @@ public class AuthService {
             throw new ChatException(ErrorCode.EMAIL_VERIFICATION_MISMATCH);
 
         String password = encodePassword(body.getPassword());
-        User user = new User(email, password, body.getName(), body.getRole());
+        User user = new User(email, password, body.getName(), UserRole.USER);
 
         userService.save(user);
+
+        log.info("회원가입 완료: {}", email);
     }
 
     public void sendEmail(String to, HashMap<String, Object> messageMap, EmailType type) {
-        if (userService.emailExists(to))
+        if (userService.emailExists(emailFormat(to)))
             throw new ChatException(ErrorCode.EMAIL_DUPLICATE);
 
         MailService mailService = mailServiceFactory.getService(type);
@@ -76,5 +107,9 @@ public class AuthService {
 
     private boolean matchPassword(String password, String hashPassword) {
         return passwordEncoder.matches(password, hashPassword);
+    }
+
+    private String emailFormat(String email) {
+        return email.toLowerCase();
     }
 }

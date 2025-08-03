@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.toy.chatapp.common.response.ApiResponse;
+import com.toy.chatapp.dto.SignInRequestDto;
+import com.toy.chatapp.dto.SignInResponseDto;
 import com.toy.chatapp.dto.SignUpRequestDto;
 import com.toy.chatapp.dto.VerifyEmailRequestDto;
 import com.toy.chatapp.dto.VerityCodeRequestDto;
@@ -30,8 +32,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public void login(@RequestBody String a) {
-
+    public ResponseEntity<ApiResponse<SignInResponseDto>> login(@RequestBody SignInRequestDto body) {
+        SignInResponseDto responseBody = authService.signIn(body);
+        return ResponseEntity.ok(ApiResponse.success(responseBody));
     }
 
     @PostMapping("/logout")
