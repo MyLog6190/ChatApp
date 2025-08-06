@@ -1,4 +1,4 @@
-package com.toy.chatapp.security;
+package com.toy.chatapp.config;
 
 import java.util.List;
 

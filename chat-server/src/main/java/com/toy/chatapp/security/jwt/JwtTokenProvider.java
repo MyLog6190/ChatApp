@@ -2,10 +2,14 @@ package com.toy.chatapp.security.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import com.toy.chatapp.enums.UserRole;
@@ -17,7 +21,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
     @Value("${secretKey}")
@@ -78,6 +84,24 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public Authentication getAuthentication(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        String username = claims.getSubject();
+        String role = claims.get("role", String.class);
+        log.info("claims : {}", claims);
+        log.info("username : {}", username);
+
+        Authentication auth = new UsernamePasswordAuthenticationToken(username, "",
+                Collections.singletonList( // authorities
+                        new SimpleGrantedAuthority(role))); // (List<GrantedAuthority>)
+        return auth;
     }
 
 }
