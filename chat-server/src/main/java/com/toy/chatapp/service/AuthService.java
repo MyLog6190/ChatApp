@@ -1,26 +1,29 @@
 package com.toy.chatapp.service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.toy.chatapp.common.exception.ChatException;
 import com.toy.chatapp.common.exception.ErrorCode;
-import com.toy.chatapp.dto.SignInResponseDto;
 import com.toy.chatapp.dto.SignInRequestDto;
+import com.toy.chatapp.dto.SignInResponseDto;
 import com.toy.chatapp.dto.SignUpRequestDto;
 import com.toy.chatapp.dto.VerityCodeResponseDto;
 import com.toy.chatapp.entity.User;
-import com.toy.chatapp.enums.AuthProvider;
 import com.toy.chatapp.enums.EmailType;
 import com.toy.chatapp.enums.UserRole;
 import com.toy.chatapp.factory.MailServiceFactory;
 import com.toy.chatapp.security.jwt.JwtTokenProvider;
 import com.toy.chatapp.service.redis.EmailVerificationCodeRedisService;
 import com.toy.chatapp.service.redis.EmailVerifiedStatusRedisService;
+import com.toy.chatapp.service.redis.RefleshTokenRedisService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,6 +36,7 @@ public class AuthService {
     private final MailServiceFactory mailServiceFactory;
     private final EmailVerificationCodeRedisService emailVerificationCodeRedisService;
     private final EmailVerifiedStatusRedisService emailVerifiedStatusRedisService;
+    private final RefleshTokenRedisService refleshTokenRedisService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -51,6 +55,7 @@ public class AuthService {
                 user.getRole());
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getPublicId());
 
+        refleshTokenRedisService.save(user.getPublicId(), refreshToken);
         SignInResponseDto responseDto = new SignInResponseDto(accessToken, refreshToken);
 
         return responseDto;
@@ -99,6 +104,37 @@ public class AuthService {
         VerityCodeResponseDto responseDto = new VerityCodeResponseDto(email, code);
 
         return responseDto;
+    }
+
+    public SignInResponseDto refreshToken(String refreshToken) {
+        if (refreshToken == null || refreshToken.isBlank())
+            throw new ChatException(ErrorCode.MISSING_TOKEN);
+
+        if (!jwtTokenProvider.validateToken(refreshToken))
+            throw new ChatException(ErrorCode.INVALID_TOKEN);
+
+        UUID publicId = jwtTokenProvider.getPublicId(refreshToken);
+
+        String findRefreshToken = refleshTokenRedisService.find(publicId);
+
+        if (findRefreshToken == null)
+            throw new ChatException(ErrorCode.INVALID_TOKEN);
+
+        if (!refreshToken.equals(findRefreshToken))
+            throw new ChatException(ErrorCode.INVALID_TOKEN);
+
+        User user = userService.findUserByPublicId(publicId)
+                .orElseThrow(() -> new ChatException(ErrorCode.USER_404));
+
+        String accessToken = jwtTokenProvider.createToken(user.getPublicId(),
+                user.getEmail(), user.getName(), user.getRole());
+
+        String newRefreshToken = jwtTokenProvider.createRefreshToken(publicId);
+
+        SignInResponseDto responseBody = new SignInResponseDto(accessToken, newRefreshToken);
+
+        return responseBody;
+
     }
 
     private String encodePassword(String password) {

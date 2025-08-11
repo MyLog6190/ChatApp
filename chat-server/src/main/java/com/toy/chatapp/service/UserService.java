@@ -1,7 +1,9 @@
 package com.toy.chatapp.service;
 
 import java.util.Optional;
+import java.util.UUID;
 
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
 import com.toy.chatapp.entity.User;
@@ -22,6 +24,10 @@ public class UserService {
 
     public Optional<User> findUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public Optional<User> findUserByPublicId(UUID publicId) {
+        return userRepository.findUserByPublicId(publicId);
     }
 
     public boolean emailExists(String email) {
