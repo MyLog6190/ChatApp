@@ -1,6 +1,8 @@
 package com.toy.chatapp.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.JdbcTypeCode;
@@ -45,7 +47,7 @@ public class User {
     private String name;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private UserProvider[] userProviders;
+    private List<UserProvider> userProviders = new ArrayList<>();
 
     @Enumerated(EnumType.STRING) // ENTITY에서 ENUM 사용할 때 사용
     private UserRole role;
