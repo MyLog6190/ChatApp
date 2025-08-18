@@ -3,7 +3,6 @@ package com.toy.chatapp.service;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
 import com.toy.chatapp.entity.User;

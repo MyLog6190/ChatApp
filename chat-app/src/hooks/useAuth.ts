@@ -1,8 +1,12 @@
 import {useMutation, UseMutationOptions, useQuery} from '@tanstack/react-query';
 import {useEffect} from 'react';
 import {login, sendVerificationEmail, signup, verifyCode} from '../api/auth';
-import {removeEncryptedStorage} from '../utils/encryptStorage';
+import {
+  removeEncryptedStorage,
+  setEncryptedStorage,
+} from '../utils/encryptStorage';
 import {removeHeader, setHeader} from '../utils/header';
+import {jwtDecode} from 'jwt-decode';
 
 type UseMuatatioinCustomOptions<TData = unknown, TVariables = unknown> = Omit<
   UseMutationOptions<TData, Error, TVariables, unknown>,
@@ -13,10 +17,10 @@ export const useSignup = (mutationOprions?: UseMuatatioinCustomOptions) => {
   return useMutation({
     mutationFn: signup,
     ...mutationOprions,
-    onSuccess: ({data}) => {
+    onSuccess: ({data}: {data: any}) => {
       console.log(data);
     },
-    onError: err => {
+    onError: (err: any) => {
       console.log(err);
     },
   });
@@ -26,10 +30,10 @@ export const useSendEmali = (mutationOprions?: UseMuatatioinCustomOptions) => {
   return useMutation({
     mutationFn: sendVerificationEmail,
     ...mutationOprions,
-    onSuccess: ({data}) => {
+    onSuccess: ({data}: {data: any}) => {
       console.log(data);
     },
-    onError: err => {
+    onError: (err: any) => {
       console.error(err);
     },
   });
@@ -39,7 +43,7 @@ export const useVerifyCode = (mutationOprions?: UseMuatatioinCustomOptions) => {
   return useMutation({
     mutationFn: verifyCode,
     ...mutationOprions,
-    onSuccess: ({data}) => {
+    onSuccess: ({data}: {data: any}) => {
       console.log(data);
       return data;
     },
@@ -53,9 +57,14 @@ export const useVerifyCode = (mutationOprions?: UseMuatatioinCustomOptions) => {
 export const useLogin = (mutationOprion?: UseMuatatioinCustomOptions) => {
   return useMutation({
     mutationFn: login,
-    onSuccess: ({data}) => {
+    onSuccess: ({data}: {data: any}) => {
       if (!data) return;
       setHeader('Authorization', `Bearer ${data.accessToken}`);
+      setEncryptedStorage('accessToken', data.accessToken);
+      setEncryptedStorage('refreshToken', data.refreshToken);
+
+      const payload = jwtDecode(data.accessToken);
+      console.log(payload);
     },
   });
 };

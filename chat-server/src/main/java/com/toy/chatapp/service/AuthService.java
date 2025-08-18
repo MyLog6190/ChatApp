@@ -1,8 +1,6 @@
 package com.toy.chatapp.service;
 
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,7 +21,6 @@ import com.toy.chatapp.service.redis.EmailVerificationCodeRedisService;
 import com.toy.chatapp.service.redis.EmailVerifiedStatusRedisService;
 import com.toy.chatapp.service.redis.RefleshTokenRedisService;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

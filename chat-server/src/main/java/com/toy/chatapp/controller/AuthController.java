@@ -1,11 +1,9 @@
 package com.toy.chatapp.controller;
 
-import java.net.HttpCookie;
 import java.util.HashMap;
 import java.util.Random;
 
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.toy.chatapp.common.response.ApiResponse;
-import com.toy.chatapp.common.util.CookieUtil;
 import com.toy.chatapp.dto.SignInRequestDto;
 import com.toy.chatapp.dto.SignInResponseDto;
 import com.toy.chatapp.dto.SignUpRequestDto;
@@ -23,7 +20,6 @@ import com.toy.chatapp.dto.VerityCodeRequestDto;
 import com.toy.chatapp.dto.VerityCodeResponseDto;
 import com.toy.chatapp.service.AuthService;
 
-import io.swagger.v3.oas.annotations.headers.Header;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -40,20 +36,15 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<SignInResponseDto>> login(HttpServletResponse response,
             @RequestBody SignInRequestDto body) {
-
         SignInResponseDto responseBody = authService.signIn(body);
-
         return ResponseEntity.ok(ApiResponse.success(responseBody));
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<SignInResponseDto>> refresh(
             @RequestHeader("X-Refresh-Token") String refreshToken) {
-
         SignInResponseDto responseBody = authService.refreshToken(refreshToken);
-
         return ResponseEntity.ok(ApiResponse.success(responseBody));
-
     }
 
     @PostMapping("/logout")
