@@ -1,13 +1,28 @@
 import {create} from 'zustand';
+import {Profile} from '../types/doamain';
+
+type ProfileType = Profile;
+type Tokens = {accessToken: string | null; refreshToken: string | null};
 
 interface AuthState {
-  token: string;
-  setToken: (token: string) => void;
+  tokens: Tokens;
+  profile: ProfileType;
+  setProfile: (profile: ProfileType) => void;
   logout: () => void;
 }
 
+// persist 데이터를 앱이 꺼졌다 켜져도 유지
 export const useAuthStore = create<AuthState>(set => ({
-  token: '',
-  setToken: token => set({token}),
-  logout: () => set({token: ''}),
+  tokens: {accessToken: null, refreshToken: null},
+  profile: {email: '', name: '', role: '', publicId: ''},
+
+  setProfile: profile => set({profile}),
+
+  setToken: (tokens: Tokens) => set({tokens}),
+
+  logout: () =>
+    set({
+      tokens: {accessToken: null, refreshToken: null},
+      profile: {email: '', name: '', role: '', publicId: ''},
+    }),
 }));

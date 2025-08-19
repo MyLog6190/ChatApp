@@ -4,9 +4,11 @@ import {login, sendVerificationEmail, signup, verifyCode} from '../api/auth';
 import {
   removeEncryptedStorage,
   setEncryptedStorage,
-} from '../utils/encryptStorage';
+} from '../utils/encrypt-storage';
 import {removeHeader, setHeader} from '../utils/header';
 import {jwtDecode} from 'jwt-decode';
+import {useAuthStore} from '../stores/useAuthStore';
+import {Profile} from '../types/doamain';
 
 type UseMuatatioinCustomOptions<TData = unknown, TVariables = unknown> = Omit<
   UseMutationOptions<TData, Error, TVariables, unknown>,
@@ -59,12 +61,30 @@ export const useLogin = (mutationOprion?: UseMuatatioinCustomOptions) => {
     mutationFn: login,
     onSuccess: ({data}: {data: any}) => {
       if (!data) return;
+      console.log(data);
+
       setHeader('Authorization', `Bearer ${data.accessToken}`);
       setEncryptedStorage('accessToken', data.accessToken);
       setEncryptedStorage('refreshToken', data.refreshToken);
 
-      const payload = jwtDecode(data.accessToken);
-      console.log(payload);
+      const getPayload = (data: any): Profile => {
+        const payload: Profile = {
+          email: data.email,
+          name: data.name,
+          role: data.role,
+          publicId: data.sub,
+        };
+
+        return payload;
+      };
+
+      const profile = getPayload(jwtDecode(data.accessToken));
+
+      const setPayload = useAuthStore(state => state.setProfile);
+
+      setPayload({...profile});
+
+      console.log(profile);
     },
   });
 };

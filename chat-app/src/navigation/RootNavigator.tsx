@@ -1,6 +1,6 @@
 import {createStackNavigator} from '@react-navigation/stack';
 
-function StackNavigator() {
+function RootNavigator() {
   const Stack = createStackNavigator();
 
   return (
@@ -10,4 +10,4 @@ function StackNavigator() {
   );
 }
 
-export default StackNavigator;
+export default RootNavigator;

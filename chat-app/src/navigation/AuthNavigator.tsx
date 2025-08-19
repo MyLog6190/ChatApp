@@ -1,5 +1,4 @@
 import {createStackNavigator} from '@react-navigation/stack';
-import {HomeStackParamList} from '../types/stack-param-list';
 import LoginScreen from '../screens/LoginScreen';
 import SignupScreen from '../screens/SignupScreen';
 import FriendListScreen from '../screens/FriendListScreen';
@@ -7,6 +6,7 @@ import ChatRoomListScreen from '../screens/ChatRoomListScreen';
 import ChatRoomScreen from '../screens/ChatRoomScreen';
 import MyPageScreen from '../screens/MyPage';
 import HomeScreen from '../screens/HomeScreen';
+import {HomeStackParamList} from './type';
 
 function AuthStackNavigator() {
   const Stack = createStackNavigator<HomeStackParamList>();

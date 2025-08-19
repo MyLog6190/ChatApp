@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useSendEmali, useSignup, useVerifyCode} from '../../hooks/useAuth';
-import {EmailType} from '../../constants/email-type';
+import {EmailType} from '../../constants/email-types';
 
 const signUpSchema = z
   .object({
