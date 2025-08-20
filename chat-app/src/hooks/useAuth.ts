@@ -1,21 +1,31 @@
-import {useMutation, UseMutationOptions, useQuery} from '@tanstack/react-query';
+import {
+  QueryKey,
+  useMutation,
+  UseMutationOptions,
+  useQuery,
+  UseQueryOptions,
+} from '@tanstack/react-query';
 import {useEffect} from 'react';
-import {login, sendVerificationEmail, signup, verifyCode} from '../api/auth';
+import {
+  getProfile,
+  login,
+  sendVerificationEmail,
+  signup,
+  verifyCode,
+} from '../api/auth';
+import {queryClient} from '../api/quert-client';
 import {
   removeEncryptedStorage,
   setEncryptedStorage,
 } from '../utils/encrypt-storage';
 import {removeHeader, setHeader} from '../utils/header';
-import {jwtDecode} from 'jwt-decode';
-import {useAuthStore} from '../stores/useAuthStore';
-import {Profile} from '../types/doamain';
 
-type UseMuatatioinCustomOptions<TData = unknown, TVariables = unknown> = Omit<
+type UseMutationCustomOptions<TData = unknown, TVariables = unknown> = Omit<
   UseMutationOptions<TData, Error, TVariables, unknown>,
   'mutationFn'
 >;
 
-export const useSignup = (mutationOprions?: UseMuatatioinCustomOptions) => {
+export const useSignup = (mutationOprions?: UseMutationCustomOptions) => {
   return useMutation({
     mutationFn: signup,
     ...mutationOprions,
@@ -28,7 +38,7 @@ export const useSignup = (mutationOprions?: UseMuatatioinCustomOptions) => {
   });
 };
 
-export const useSendEmali = (mutationOprions?: UseMuatatioinCustomOptions) => {
+export const useSendEmali = (mutationOprions?: UseMutationCustomOptions) => {
   return useMutation({
     mutationFn: sendVerificationEmail,
     ...mutationOprions,
@@ -41,7 +51,7 @@ export const useSendEmali = (mutationOprions?: UseMuatatioinCustomOptions) => {
   });
 };
 
-export const useVerifyCode = (mutationOprions?: UseMuatatioinCustomOptions) => {
+export const useVerifyCode = (mutationOprions?: UseMutationCustomOptions) => {
   return useMutation({
     mutationFn: verifyCode,
     ...mutationOprions,
@@ -56,35 +66,18 @@ export const useVerifyCode = (mutationOprions?: UseMuatatioinCustomOptions) => {
   });
 };
 
-export const useLogin = (mutationOprion?: UseMuatatioinCustomOptions) => {
+export const useLogin = (mutationOprion?: UseMutationCustomOptions) => {
   return useMutation({
     mutationFn: login,
     onSuccess: ({data}: {data: any}) => {
       if (!data) return;
-      console.log(data);
 
       setHeader('Authorization', `Bearer ${data.accessToken}`);
-      setEncryptedStorage('accessToken', data.accessToken);
       setEncryptedStorage('refreshToken', data.refreshToken);
-
-      const getPayload = (data: any): Profile => {
-        const payload: Profile = {
-          email: data.email,
-          name: data.name,
-          role: data.role,
-          publicId: data.sub,
-        };
-
-        return payload;
-      };
-
-      const profile = getPayload(jwtDecode(data.accessToken));
-
-      const setPayload = useAuthStore(state => state.setProfile);
-
-      setPayload({...profile});
-
-      console.log(profile);
+    },
+    onSettled: () => {
+      queryClient.refetchQueries({queryKey: ['auth', 'getAccessToken']});
+      queryClient.invalidateQueries({queryKey: ['auth', 'getProfile']});
     },
   });
 };
@@ -103,6 +96,7 @@ export const useGetRefreshToken = () => {
   useEffect(() => {
     if (isSuccess) {
       setHeader('Authorization', `Bearer ${response.getAccessToken}`);
+      setEncryptedStorage('refreshToken', response.refreshToken);
     }
   }, [isSuccess]);
 
@@ -114,4 +108,17 @@ export const useGetRefreshToken = () => {
   }, [isError]);
 
   return {isSuccess, isError};
+};
+
+type UseQueryCustomOption<TQueryFnData = unknown, TData = TQueryFnData> = Omit<
+  UseQueryOptions<TQueryFnData, Error, TData, QueryKey>,
+  'queryKey' | 'queryFn'
+>;
+
+const useGetProfile = (queryOptions: UseQueryCustomOption) => {
+  return useQuery({
+    queryKey: ['auth', 'getProfile'],
+    queryFn: getProfile,
+    ...queryOptions,
+  });
 };

@@ -32,4 +32,8 @@ export const verifyCode = async (
   return response.data;
 };
 
+export const getProfile = async (data: any) => {
+  return null;
+};
+
 export const logout = async (path: string) => {};
