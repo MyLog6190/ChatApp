@@ -24,4 +24,8 @@ public class RefreshTokenRedisRepository {
         return findRefreshToken;
     }
 
+    public void delete(UUID publicId) {
+        redisTemplate.delete(PREEFIX + publicId);
+    }
+
 }

@@ -59,6 +59,10 @@ public class AuthService {
 
     }
 
+    public void logout() {
+        
+    }
+
     public void signup(SignUpRequestDto body) {
         String email = emailFormat(body.getEmail());
 

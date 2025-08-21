@@ -48,7 +48,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public void logout(@RequestBody String s) {
+    public void logout() {
     }
 
     @PostMapping("/signup")

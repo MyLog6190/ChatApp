@@ -122,3 +122,5 @@ const useGetProfile = (queryOptions: UseQueryCustomOption) => {
     ...queryOptions,
   });
 };
+
+function useAuth() {}

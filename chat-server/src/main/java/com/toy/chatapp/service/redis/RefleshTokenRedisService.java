@@ -21,4 +21,9 @@ public class RefleshTokenRedisService {
     public String find(UUID publicId) {
         return refleshTokenRedisRepository.find(publicId);
     }
+
+    public void delete(UUID publicId) {
+        refleshTokenRedisRepository.delete(publicId);
+    }
+
 }
