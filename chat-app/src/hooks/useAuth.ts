@@ -1,29 +1,14 @@
-import {
-  QueryKey,
-  useMutation,
-  UseMutationOptions,
-  useQuery,
-  UseQueryOptions,
-} from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import {useEffect} from 'react';
-import {
-  getProfile,
-  login,
-  sendVerificationEmail,
-  signup,
-  verifyCode,
-} from '../api/auth';
-import {queryClient} from '../api/quert-client';
+import {login, sendVerificationEmail, signup, verifyCode} from '../api/auth';
+import queryClient from '../api/quert-client';
+import {getProfile} from '../api/user';
+import {UseMutationCustomOptions, UseQueryCustomOption} from '../types/api';
 import {
   removeEncryptedStorage,
   setEncryptedStorage,
 } from '../utils/encrypt-storage';
 import {removeHeader, setHeader} from '../utils/header';
-
-type UseMutationCustomOptions<TData = unknown, TVariables = unknown> = Omit<
-  UseMutationOptions<TData, Error, TVariables, unknown>,
-  'mutationFn'
->;
 
 export const useSignup = (mutationOprions?: UseMutationCustomOptions) => {
   return useMutation({
@@ -46,7 +31,7 @@ export const useSendEmali = (mutationOprions?: UseMutationCustomOptions) => {
       console.log(data);
     },
     onError: (err: any) => {
-      console.error(err);
+      console.error(err.response.data);
     },
   });
 };
@@ -109,11 +94,6 @@ export const useGetRefreshToken = () => {
 
   return {isSuccess, isError};
 };
-
-type UseQueryCustomOption<TQueryFnData = unknown, TData = TQueryFnData> = Omit<
-  UseQueryOptions<TQueryFnData, Error, TData, QueryKey>,
-  'queryKey' | 'queryFn'
->;
 
 const useGetProfile = (queryOptions: UseQueryCustomOption) => {
   return useQuery({

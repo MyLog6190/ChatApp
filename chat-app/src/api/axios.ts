@@ -2,9 +2,9 @@ import axios from 'axios';
 // import dotenv from 'dotenv';
 import {API_BASE_URL} from '@env';
 
-const baseURL = API_BASE_URL;
+console.log('[API]', API_BASE_URL); // 찍히면 성공
 
-// console.log('[API]', API_BASE_URL); // 찍히면 성공
+const baseURL = API_BASE_URL;
 
 // dotenv.config(); Windows에서 경로를 못 찾음
 // const baseURL: string | undefined = API_BASE_URL;

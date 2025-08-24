@@ -42,7 +42,7 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<SignInResponseDto>> refresh(
-            @RequestHeader("X-Refresh-Token") String refreshToken) {
+            @RequestHeader("Authorization") String refreshToken) {
         SignInResponseDto responseBody = authService.refreshToken(refreshToken);
         return ResponseEntity.ok(ApiResponse.success(responseBody));
     }
