@@ -59,8 +59,11 @@ public class AuthService {
 
     }
 
-    public void logout() {
-        
+    public void logout(String accessToken) {
+
+        UUID publicId = jwtTokenProvider.getPublicId(accessToken);
+        refleshTokenRedisService.delete(publicId);
+
     }
 
     public void signup(SignUpRequestDto body) {

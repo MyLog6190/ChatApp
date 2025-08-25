@@ -71,6 +71,7 @@ public class AuthController {
         authService.sendEmail(body.getEmail(), (HashMap<String, Object>) map, body.getType());
 
         return ResponseEntity.ok(ApiResponse.success(null)); // 또는 success()
+
     }
 
     @PostMapping("/verify-code")

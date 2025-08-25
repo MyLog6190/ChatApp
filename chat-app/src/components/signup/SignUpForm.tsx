@@ -13,6 +13,7 @@ import {
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useSendEmali, useSignup, useVerifyCode} from '../../hooks/useAuth';
 import {EmailTypes} from '../../constants/email-types';
+import {BasicPopup} from '../popup';
 
 const signUpSchema = z
   .object({
@@ -70,6 +71,9 @@ export default function SignupForm() {
   const sendEmailMutate = useSendEmali();
   const verityCodeMutate = useVerifyCode();
   const [isCodeVerified, setIsCodeVerified] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [title, setTitle] = useState<string | undefined>(undefined);
+  const [message, setMessage] = useState<string | undefined>(undefined);
 
   const onSubmit = (data: any) => {
     console.log(data);
@@ -86,35 +90,53 @@ export default function SignupForm() {
     name: 'code',
   });
 
-  const sendEmail = (email: string, type: EmailTypes) => {
+  const isValidEmail = (email: string) => {
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email);
+  };
+
+  const sendEmail = async (email: string, type: EmailTypes) => {
+    if (!isValidEmail(email)) {
+      setModalVisible(true);
+      setTitle('전송 실패');
+      setMessage('올바른 이메일 형식이 아닙니다.');
+      return;
+    }
     try {
-      sendEmailMutate.mutate({email, type});
-    } catch (error: any) {
-      console.log(error.response.data);
+      const response = await sendEmailMutate.mutateAsync({email, type});
+      setModalVisible(true);
+      setTitle('전송 성공');
+      setMessage('인증 코드가 발송 되었습니다. \n 메일을 확인해 주세요.');
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const verifyCode = async (email: string, code: string) => {
     try {
-      const result = await verityCodeMutate.mutateAsync({
+      const response = await verityCodeMutate.mutateAsync({
         email,
         code,
       });
 
-      if (result.data.email !== email) {
+      if (response.data.email !== email) {
         setError('email', {message: '인증 요청한 이메일이 아닙니다.'});
       }
 
-      if (result.data.code !== code) {
+      if (response.data.code !== code) {
         setError('code', {
           message: '인증 코드가 유효하지 않거나 만료되었습니다.',
         });
       }
 
-      setIsCodeVerified(result.data.code === code);
+      setIsCodeVerified(response.data.code === code);
     } catch (error: any) {
       console.log(error.response.data);
       if (error.response.data.code === 'AUTH_422') {
+        setModalVisible(true);
+        setTitle('전송 실패');
+        setMessage('인증 코드가 유효하지 않거나 만료되었습니다.');
+
         setError('code', {
           message: error.response.data.message,
         });
@@ -124,6 +146,12 @@ export default function SignupForm() {
 
   return (
     <View style={styles.innerContainer}>
+      <BasicPopup
+        visible={modalVisible}
+        title={title}
+        message={message}
+        onClose={() => setModalVisible(false)}
+      />
       <Image
         source={require('../../assets/logo-white.png')}
         style={styles.logo}
