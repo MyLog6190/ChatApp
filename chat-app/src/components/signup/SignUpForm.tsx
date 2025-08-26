@@ -1,19 +1,21 @@
 // components/SignupForm.tsx
+import {zodResolver} from '@hookform/resolvers/zod';
 import React, {useState} from 'react';
 import {Controller, useForm, useWatch} from 'react-hook-form';
-import {z} from 'zod';
 import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  Text,
   Image,
   StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import {zodResolver} from '@hookform/resolvers/zod';
-import {useSendEmali, useSignup, useVerifyCode} from '../../hooks/useAuth';
+import {z} from 'zod';
 import {EmailTypes} from '../../constants/email-types';
-import {BasicPopup} from '../popup';
+import {useSendEmali, useSignup, useVerifyCode} from '../../hooks/useAuth';
+import {Popup} from '../popup';
+import {usePopup} from '../../hooks/usePopup';
+import {APP_MESSAGES} from '../../utils/appMessage';
 
 const signUpSchema = z
   .object({
@@ -66,14 +68,11 @@ export default function SignupForm() {
       confirmPassword: '',
     },
   });
-
   const signupMutate = useSignup();
   const sendEmailMutate = useSendEmali();
   const verityCodeMutate = useVerifyCode();
   const [isCodeVerified, setIsCodeVerified] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [title, setTitle] = useState<string | undefined>(undefined);
-  const [message, setMessage] = useState<string | undefined>(undefined);
+  const {state, open, close} = usePopup();
 
   const onSubmit = (data: any) => {
     console.log(data);
@@ -97,16 +96,12 @@ export default function SignupForm() {
 
   const sendEmail = async (email: string, type: EmailTypes) => {
     if (!isValidEmail(email)) {
-      setModalVisible(true);
-      setTitle('전송 실패');
-      setMessage('올바른 이메일 형식이 아닙니다.');
+      open('INVALID_EMAIL');
       return;
     }
     try {
       const response = await sendEmailMutate.mutateAsync({email, type});
-      setModalVisible(true);
-      setTitle('전송 성공');
-      setMessage('인증 코드가 발송 되었습니다. \n 메일을 확인해 주세요.');
+      open('EMAIL_SENT');
     } catch (error) {
       console.log(error);
     }
@@ -133,10 +128,6 @@ export default function SignupForm() {
     } catch (error: any) {
       console.log(error.response.data);
       if (error.response.data.code === 'AUTH_422') {
-        setModalVisible(true);
-        setTitle('전송 실패');
-        setMessage('인증 코드가 유효하지 않거나 만료되었습니다.');
-
         setError('code', {
           message: error.response.data.message,
         });
@@ -146,11 +137,12 @@ export default function SignupForm() {
 
   return (
     <View style={styles.innerContainer}>
-      <BasicPopup
-        visible={modalVisible}
-        title={title}
-        message={message}
-        onClose={() => setModalVisible(false)}
+      <Popup
+        visible={state.visible}
+        variant={state.variant as 'success' | 'error' | 'info'}
+        title={state.title}
+        message={state.message}
+        onClose={close}
       />
       <Image
         source={require('../../assets/logo-white.png')}
