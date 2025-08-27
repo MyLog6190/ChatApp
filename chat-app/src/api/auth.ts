@@ -14,12 +14,12 @@ const BASE_URL = 'auth/v1';
 export const sendVerificationEmail = async (
   requestBody: SendEmailRequest,
 ): Promise<AxiosResponse> => {
-  const response = await axiosInstance.post(
+  const {data} = await axiosInstance.post(
     `${BASE_URL}/send-email`,
     requestBody,
   );
 
-  return response;
+  return data;
 };
 
 export const verifyCode = async (

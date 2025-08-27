@@ -32,8 +32,9 @@ export const useSendEmali = (mutationOprions?: UseMutationCustomOptions) => {
       return data;
     },
     onError: (err: any) => {
+      const {message, code} = err.response.data;
       console.error(err.response.data);
-      return err.response.data;
+      return err;
     },
   });
 };
@@ -50,7 +51,7 @@ export const useVerifyCode = (mutationOprions?: UseMutationCustomOptions) => {
       console.log(err);
       const {message, code} = err.response.data;
       console.log(message, code);
-      return {message, code};
+      return err;
     },
   });
 };

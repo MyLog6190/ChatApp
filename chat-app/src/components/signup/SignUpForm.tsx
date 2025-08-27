@@ -15,7 +15,7 @@ import {EmailTypes} from '../../constants/email-types';
 import {useSendEmali, useSignup, useVerifyCode} from '../../hooks/useAuth';
 import {Popup} from '../popup';
 import {usePopup} from '../../hooks/usePopup';
-import {APP_MESSAGES} from '../../utils/appMessage';
+import {APP_MESSAGES} from '../../constants/app-message';
 
 const signUpSchema = z
   .object({
@@ -99,11 +99,15 @@ export default function SignupForm() {
       open('INVALID_EMAIL');
       return;
     }
+
     try {
       const response = await sendEmailMutate.mutateAsync({email, type});
+      console.log(response);
       open('EMAIL_SENT');
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.log(error.response.data.code);
+
+      open(error.response.data.code);
     }
   };
 
@@ -161,9 +165,11 @@ export default function SignupForm() {
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
+              editable={!isCodeVerified}
             />
             <TouchableOpacity
               style={styles.verifyButton}
+              disabled={isCodeVerified}
               onPress={() => {
                 sendEmail(email, EmailTypes.VERIFICATION);
               }}>

@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {APP_MESSAGES} from '../utils/appMessage';
+import {APP_MESSAGES} from '../constants/app-message';
 
 const INITIAL = {
   visible: false,
