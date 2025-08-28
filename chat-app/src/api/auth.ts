@@ -34,7 +34,7 @@ export const verifyCode = async (
 
 export const signup = async (
   requestBody: SignupRequest,
-): Promise<ResponseBody<null>> => {
+): Promise<AxiosResponse> => {
   const {data} = await axiosInstance.post(`${BASE_URL}/signup`, requestBody);
   return data;
 };

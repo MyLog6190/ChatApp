@@ -13,9 +13,8 @@ import {
 import {z} from 'zod';
 import {EmailTypes} from '../../constants/email-types';
 import {useSendEmali, useSignup, useVerifyCode} from '../../hooks/useAuth';
-import {Popup} from '../popup';
 import {usePopup} from '../../hooks/usePopup';
-import {APP_MESSAGES} from '../../constants/app-message';
+import {Popup} from '../popup';
 
 const signUpSchema = z
   .object({
@@ -74,9 +73,53 @@ export default function SignupForm() {
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const {state, open, close} = usePopup();
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     console.log(data);
-    signupMutate.mutate(data);
+
+    if (!isCodeVerified) {
+      open('CODE_VERIFY_REQUIRED');
+      return;
+    }
+
+    try {
+      await signupMutate.mutateAsync(data);
+    } catch (error: any) {
+      console.log(error.response.data.code);
+
+      open(error.response.data.code);
+    }
+  };
+
+  const onInvalid = (error: any) => {
+    console.log(error);
+    if (error.email) {
+      open('EMAIL_REQUIRED');
+      return;
+    }
+
+    if (error.code) {
+      open('CODE_REQUIRED');
+      return;
+    }
+
+    if (error.name) {
+      open('NAME_REQUIRED');
+      return;
+    }
+
+    if (error.password) {
+      open('PASSWORD_REQUIRED');
+      return;
+    }
+
+    if (error.confirmPassword) {
+      if (error.confirmPassword.message === '비밀번호가 일치하지 않습니다.') {
+        open('PASSWORD_MISMATCH_CLIENT');
+        return;
+      }
+      open('CONFIRM_PASSWORD_REQUIRED');
+      return;
+    }
   };
 
   const email = useWatch({
@@ -148,6 +191,7 @@ export default function SignupForm() {
         message={state.message}
         onClose={close}
       />
+
       <Image
         source={require('../../assets/logo-white.png')}
         style={styles.logo}
@@ -278,7 +322,7 @@ export default function SignupForm() {
       )}
       <TouchableOpacity
         style={styles.signupButton}
-        onPress={handleSubmit(onSubmit)}>
+        onPress={handleSubmit(onSubmit, onInvalid)}>
         <Text style={styles.signupButtonText}>회원가입</Text>
       </TouchableOpacity>
     </View>

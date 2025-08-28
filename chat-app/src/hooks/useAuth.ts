@@ -16,9 +16,11 @@ export const useSignup = (mutationOprions?: UseMutationCustomOptions) => {
     ...mutationOprions,
     onSuccess: ({data}: {data: any}) => {
       console.log(data);
+      return data;
     },
     onError: (err: any) => {
       console.log(err);
+      return err;
     },
   });
 };
@@ -32,7 +34,6 @@ export const useSendEmali = (mutationOprions?: UseMutationCustomOptions) => {
       return data;
     },
     onError: (err: any) => {
-      const {message, code} = err.response.data;
       console.error(err.response.data);
       return err;
     },

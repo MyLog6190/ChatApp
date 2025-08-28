@@ -21,6 +21,46 @@ export const APP_MESSAGES: Dict = {
     title: '전송 성공',
     content: '인증 코드가 발송되었습니다.\n메일을 확인해 주세요.',
   },
+  FORM_INVALID: {
+    variant: 'error',
+    title: '입력 오류',
+    content: '입력값을 확인해 주세요.',
+  },
+  EMAIL_REQUIRED: {
+    variant: 'error',
+    title: '입력 오류',
+    content: '이메일을 입력해 주세요.',
+  },
+  CODE_REQUIRED: {
+    variant: 'error',
+    title: '인증 필요',
+    content: '인증 코드를 입력해 주세요.',
+  },
+  CODE_VERIFY_REQUIRED: {
+    variant: 'info',
+    title: '인증 필요',
+    content: '이메일로 받은 인증 코드를 입력하고 \n확인 버튼을 눌러 주세요.',
+  },
+  NAME_REQUIRED: {
+    variant: 'error',
+    title: '입력 오류',
+    content: '이름을 입력해 주세요.',
+  },
+  PASSWORD_REQUIRED: {
+    variant: 'error',
+    title: '입력 오류',
+    content: '비밀번호를 입력해 주세요.',
+  },
+  CONFIRM_PASSWORD_REQUIRED: {
+    variant: 'error',
+    title: '입력 오류',
+    content: '비밀번호를 다시 입력해 주세요.',
+  },
+  PASSWORD_MISMATCH_CLIENT: {
+    variant: 'error',
+    title: '입력 오류',
+    content: '비밀번호가 일치하지 않습니다.',
+  },
 
   // 인증 관련 (서버 코드와 동일한 키)
   AUTH_401: {

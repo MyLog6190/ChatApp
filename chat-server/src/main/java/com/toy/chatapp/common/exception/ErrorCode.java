@@ -12,6 +12,7 @@ public enum ErrorCode {
     INVALID_CODE("AUTH_422", "인증 코드가 유효하지 않거나 만료되었습니다.", HttpStatus.UNPROCESSABLE_ENTITY),
     PASSWORD_MISMATCH("AUTH_423", "비밀번호가 일치하지 않습니다.", HttpStatus.UNPROCESSABLE_ENTITY),
     EMAIL_VERIFICATION_MISMATCH("AUTH_412", "이메일 인증 정보가 일치하지 않습니다.", HttpStatus.PRECONDITION_FAILED),
+    VALIDATION_ERROR("VALIDATION_ERROR", "요청 값이 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
 
     // 사용자 관련
     USER_404("USER_404", "사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
