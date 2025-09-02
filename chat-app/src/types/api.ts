@@ -3,10 +3,6 @@ import {
   UseMutationOptions,
   UseQueryOptions,
 } from '@tanstack/react-query';
-import {AxiosError} from 'axios';
-import {ResponseBody} from './dto/res';
-
-type ResponseError = AxiosError<ResponseBody<null>>;
 
 export type UseMutationCustomOptions<
   TData = unknown,

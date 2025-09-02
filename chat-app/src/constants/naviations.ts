@@ -7,3 +7,8 @@ export const homeNavigations = {
   CHAT_ROOM: 'ChatRoom',
   MY_PAGE: 'MyPage',
 } as const;
+
+export const authNavigations = {
+  LOGIN: 'login',
+  SIGN_UP: 'Signup',
+};

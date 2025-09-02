@@ -16,7 +16,7 @@ export default function MyPageScreen() {
       {/* 프로필 정보 */}
       <View style={styles.profileContainer}>
         <Image
-          source={require('../assets/default-avatar-black.png')}
+          source={require('../../assets/default-avatar-black.png')}
           style={styles.avatar}
         />
         <Text style={styles.username}>홍길동</Text>

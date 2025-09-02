@@ -1,14 +1,22 @@
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {useEffect} from 'react';
-import {login, sendVerificationEmail, signup, verifyCode} from '../api/auth';
-import queryClient from '../api/quert-client';
-import {getProfile} from '../api/user';
-import {UseMutationCustomOptions, UseQueryCustomOption} from '../types/api';
+import {
+  getAccessToken,
+  login,
+  sendVerificationEmail,
+  signup,
+  verifyCode,
+} from '../../api/auth';
+import queryClient from '../../api/quert-client';
+import {getProfile} from '../../api/user';
+import {ExpiredTime} from '../../constants/expired';
+import {UseMutationCustomOptions, UseQueryCustomOption} from '../../types/api';
+import {Profile} from '../../types/doamain';
 import {
   removeEncryptedStorage,
   setEncryptedStorage,
-} from '../utils/encrypt-storage';
-import {removeHeader, setHeader} from '../utils/header';
+} from '../../utils/encrypt-storage';
+import {removeHeader, setHeader} from '../../utils/header';
 
 export const useSignup = (mutationOprions?: UseMutationCustomOptions) => {
   return useMutation({
@@ -61,10 +69,11 @@ export const useLogin = (mutationOprion?: UseMutationCustomOptions) => {
   return useMutation({
     mutationFn: login,
     onSuccess: ({data}: {data: any}) => {
+      console.log(data);
       if (!data) return;
-
       setHeader('Authorization', `Bearer ${data.accessToken}`);
       setEncryptedStorage('refreshToken', data.refreshToken);
+      queryClient.fetchQuery({queryKey: ['auth', 'getAccessToken']});
     },
     onSettled: () => {
       queryClient.refetchQueries({queryKey: ['auth', 'getAccessToken']});
@@ -73,11 +82,12 @@ export const useLogin = (mutationOprion?: UseMutationCustomOptions) => {
   });
 };
 
-export const useGetRefreshToken = () => {
+const useGetRefreshToken = () => {
   const {isSuccess, data, isError} = useQuery({
     queryKey: ['auth', 'getAccessToken'],
-    staleTime: 1000 * 60 * 30 - 1000 * 60 * 3,
-    refetchInterval: 1000 * 60 * 30 - 1000 * 60 * 3,
+    queryFn: getAccessToken,
+    staleTime: ExpiredTime.ACCESS_TOKEN,
+    refetchInterval: ExpiredTime.ACCESS_TOKEN,
     refetchOnReconnect: true,
     refetchIntervalInBackground: true,
   });
@@ -85,23 +95,27 @@ export const useGetRefreshToken = () => {
   const response = data as any;
 
   useEffect(() => {
-    if (isSuccess) {
-      setHeader('Authorization', `Bearer ${response.getAccessToken}`);
-      setEncryptedStorage('refreshToken', response.refreshToken);
-    }
+    async () => {
+      if (isSuccess) {
+        setHeader('Authorization', `Bearer ${response.getAccessToken}`);
+        setEncryptedStorage('refreshToken', response.refreshToken);
+      }
+    };
   }, [isSuccess]);
 
   useEffect(() => {
-    if (isError) {
-      removeHeader('Authorization');
-      removeEncryptedStorage('refreshToken');
-    }
+    async () => {
+      if (isError) {
+        removeHeader('Authorization');
+        removeEncryptedStorage('refreshToken');
+      }
+    };
   }, [isError]);
 
   return {isSuccess, isError};
 };
 
-const useGetProfile = (queryOptions: UseQueryCustomOption) => {
+const useGetProfile = (queryOptions?: UseQueryCustomOption<Profile>) => {
   return useQuery({
     queryKey: ['auth', 'getProfile'],
     queryFn: getProfile,
@@ -109,4 +123,12 @@ const useGetProfile = (queryOptions: UseQueryCustomOption) => {
   });
 };
 
-function useAuth() {}
+export function useAuth() {
+  const loginMutation = useLogin();
+  const refreshTokenQuery = useGetRefreshToken();
+  const {data, isSuccess: isLogin} = useGetProfile({
+    enabled: refreshTokenQuery.isSuccess,
+  });
+  console.log(isLogin);
+  return {loginMutation, isLogin};
+}

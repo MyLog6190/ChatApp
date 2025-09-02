@@ -15,21 +15,21 @@ const chats = [
     name: '곰돌이 친구',
     message: '오늘 산책 어때요?',
     time: '오후 3:15',
-    avatar: require('../assets/default-avatar-white.png'),
+    avatar: require('../../assets/default-avatar-white.png'),
   },
   {
     id: '2',
     name: '브라우니',
     message: '사진 잘 받았어요 🐾',
     time: '오후 2:30',
-    avatar: require('../assets/default-avatar-brown.png'),
+    avatar: require('../../assets/default-avatar-brown.png'),
   },
   {
     id: '3',
     name: '흑곰이',
     message: '곧 도착할게요',
     time: '오전 11:50',
-    avatar: require('../assets/default-avatar-black.png'),
+    avatar: require('../../assets/default-avatar-black.png'),
   },
 ];
 

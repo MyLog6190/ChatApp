@@ -1,11 +1,18 @@
 // components/LinkButtons.tsx
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {AuthStackList} from '../../types/navigation';
+
+type Navigation = StackNavigationProp<AuthStackList>;
 
 export default function LinkButtons() {
+  const navigation = useNavigation<Navigation>();
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
         <Text style={styles.text}>회원가입</Text>
       </TouchableOpacity>
       <TouchableOpacity>

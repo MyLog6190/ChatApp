@@ -15,20 +15,23 @@ const friends = [
     id: '1',
     name: '홍길동',
     status: '오늘도 열심히!',
-    avatar: require('../assets/default-avatar-black.png'),
+    avatar: require('../../assets/default-avatar-black.png'),
   },
   {
     id: '2',
     name: '김철수',
     status: '휴식 중',
-    avatar: require('../assets/default-avatar-white.png'),
+    avatar: require('../../assets/default-avatar-white.png'),
   },
 ];
 
 export default function FriendListScreen() {
   return (
     <SafeAreaView style={styles.container}>
-      <Image source={require('../assets/logo-white.png')} style={styles.logo} />
+      <Image
+        source={require('../../assets/logo-white.png')}
+        style={styles.logo}
+      />
       <Text style={styles.title}>친구 목록</Text>
 
       <FlatList

@@ -55,7 +55,7 @@ const getProfile = async () => {
   return data;
 };
 
-const getAccessToken = async () => {
+export const getAccessToken = async () => {
   const refreshToken = getEncryptedStorage('refreshToken');
 
   const response = await axiosInstance.get(`${BASE_URL}/refresh`, {

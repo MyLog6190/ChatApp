@@ -1,41 +1,12 @@
-import {StackScreenProps} from '@react-navigation/stack';
-import {Button, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
+import {Text} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {homeNavigations} from '../constants/naviations';
-import {HomeStackParamList} from '../types/stack-param-list';
 
-type HomeScreenProps = StackScreenProps<HomeStackParamList>;
-function HomeScreen({navigation}: HomeScreenProps) {
+// type HomeScreenProps = StackScreenProps<HomeStackParamList>;
+function HomeScreen() {
   return (
     <SafeAreaView>
-      <Button
-        title="로그인"
-        onPress={() => navigation.navigate(homeNavigations.LOGIN)}
-      />
-      <Button
-        title="회원가입"
-        onPress={() => navigation.navigate(homeNavigations.SIGN_UP)}
-      />
-
-      <Button
-        title="친구 리스트"
-        onPress={() => navigation.navigate(homeNavigations.FRIEND_LIST)}
-      />
-
-      <Button
-        title="채팅룸 리스트"
-        onPress={() => navigation.navigate(homeNavigations.CHAT_ROOM_LIST)}
-      />
-
-      <Button
-        title="채팅창"
-        onPress={() => navigation.navigate(homeNavigations.CHAT_ROOM)}
-      />
-
-      <Button
-        title="마이페이지"
-        onPress={() => navigation.navigate(homeNavigations.MY_PAGE)}
-      />
+      <Text>AuthHome</Text>
     </SafeAreaView>
   );
 }

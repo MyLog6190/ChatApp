@@ -1,14 +1,17 @@
 // screens/LoginScreen.tsx
 import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
-import LoginForm from '../components/login/LoginForm';
-import SocialLoginButtons from '../components/login/SocialLoginButtons';
-import LinkButtons from '../components/login/LinkButtonBottons';
+import LoginForm from '../../components/login/LoginForm';
+import SocialLoginButtons from '../../components/login/SocialLoginButtons';
+import LinkButtons from '../../components/login/LinkButtonBottons';
 
 export default function LoginScreen() {
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/logo-white.png')} style={styles.logo} />
+      <Image
+        source={require('../../assets/logo-white.png')}
+        style={styles.logo}
+      />
       <Text style={styles.welcomeText}>반가워요! 로그인 해주세요</Text>
 
       <LoginForm />

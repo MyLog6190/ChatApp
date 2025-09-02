@@ -62,6 +62,12 @@ export const APP_MESSAGES: Dict = {
     content: '비밀번호가 일치하지 않습니다.',
   },
 
+  SUCCESS_SIGN_UP: {
+    variant: 'success',
+    title: '회원가입 성공',
+    content: '회원가입 되었습니다. \n로그인 후 이용해 주세요.',
+  },
+
   // 인증 관련 (서버 코드와 동일한 키)
   AUTH_401: {
     variant: 'error',

@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import {z} from 'zod';
-import {useLogin} from '../../hooks/useAuth';
+import {useLogin} from '../../hooks/queries/useAuth';
 
 const schema = z.object({
   email: z

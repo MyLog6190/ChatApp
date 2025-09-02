@@ -12,9 +12,16 @@ import {
 } from 'react-native';
 import {z} from 'zod';
 import {EmailTypes} from '../../constants/email-types';
-import {useSendEmali, useSignup, useVerifyCode} from '../../hooks/useAuth';
+import {
+  useSendEmali,
+  useSignup,
+  useVerifyCode,
+} from '../../hooks/queries/useAuth';
 import {usePopup} from '../../hooks/usePopup';
 import {Popup} from '../popup';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {AuthStackList} from '../../types/navigation';
+import {useNavigation} from '@react-navigation/native';
 
 const signUpSchema = z
   .object({
@@ -49,7 +56,7 @@ export const verifyCodeSchema = z.object({
 });
 
 type signupDate = z.infer<typeof signUpSchema>;
-
+type Navigation = StackNavigationProp<AuthStackList>;
 export default function SignupForm() {
   const {
     control,
@@ -67,12 +74,12 @@ export default function SignupForm() {
       confirmPassword: '',
     },
   });
-  const signupMutate = useSignup();
-  const sendEmailMutate = useSendEmali();
-  const verityCodeMutate = useVerifyCode();
+  const signupMutation = useSignup();
+  const sendEmailMutation = useSendEmali();
+  const verityCodeMutation = useVerifyCode();
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const {state, open, close} = usePopup();
-
+  const navigation = useNavigation<Navigation>();
   const onSubmit = async (data: any) => {
     console.log(data);
 
@@ -82,7 +89,9 @@ export default function SignupForm() {
     }
 
     try {
-      await signupMutate.mutateAsync(data);
+      await signupMutation.mutateAsync(data);
+      open('SUCCESS_SIGN_UP');
+      navigation.replace('Login');
     } catch (error: any) {
       console.log(error.response.data.code);
 
@@ -144,7 +153,7 @@ export default function SignupForm() {
     }
 
     try {
-      const response = await sendEmailMutate.mutateAsync({email, type});
+      const response = await sendEmailMutation.mutateAsync({email, type});
       console.log(response);
       open('EMAIL_SENT');
     } catch (error: any) {
@@ -156,7 +165,7 @@ export default function SignupForm() {
 
   const verifyCode = async (email: string, code: string) => {
     try {
-      const response = await verityCodeMutate.mutateAsync({
+      const response = await verityCodeMutation.mutateAsync({
         email,
         code,
       });

@@ -1,7 +1,7 @@
 // screens/SignupScreen.tsx
 import React from 'react';
 import {ScrollView, StyleSheet} from 'react-native';
-import SignupForm from '../components/signup/SignUpForm';
+import SignupForm from '../../components/signup/SignUpForm';
 
 export default function SignupScreen() {
   return (
