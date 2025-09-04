@@ -50,17 +50,21 @@ export const logout = async () => {
   await axiosInstance.post(`${BASE_URL}/logout`);
 };
 
-const getProfile = async () => {
+export const getProfile = async () => {
   const {data} = await axiosInstance.get(`${BASE_URL}/profile`);
   return data;
 };
 
 export const getAccessToken = async () => {
-  const refreshToken = getEncryptedStorage('refreshToken');
-
-  const response = await axiosInstance.get(`${BASE_URL}/refresh`, {
-    headers: {
-      Authorization: `Bearer ${refreshToken}`,
-    },
-  });
+  const refreshToken = await getEncryptedStorage('refreshToken');
+  try {
+    const response = await axiosInstance.post(`${BASE_URL}/refresh`, {
+      headers: {
+        Authorization: `Bearer ${refreshToken}`,
+      },
+    });
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
 };

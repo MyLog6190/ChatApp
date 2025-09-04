@@ -78,7 +78,7 @@ export default function SignupForm() {
   const sendEmailMutation = useSendEmali();
   const verityCodeMutation = useVerifyCode();
   const [isCodeVerified, setIsCodeVerified] = useState(false);
-  const {state, open, close} = usePopup();
+  const {state, open, confirm, close} = usePopup();
   const navigation = useNavigation<Navigation>();
   const onSubmit = async (data: any) => {
     console.log(data);
@@ -90,8 +90,17 @@ export default function SignupForm() {
 
     try {
       await signupMutation.mutateAsync(data);
-      open('SUCCESS_SIGN_UP');
-      navigation.replace('Login');
+      open('SUCCESS_SIGN_UP', {
+        onConfirm: () => {
+          console.log('[Parent] nav state:', navigation.getState());
+          try {
+            navigation.replace('Login');
+            console.log('[Parent] replace called');
+          } catch (e) {
+            console.log('[Parent] replace error', e);
+          }
+        },
+      });
     } catch (error: any) {
       console.log(error.response.data.code);
 
@@ -199,6 +208,7 @@ export default function SignupForm() {
         title={state.title}
         message={state.message}
         onClose={close}
+        onConfirm={confirm}
       />
 
       <Image

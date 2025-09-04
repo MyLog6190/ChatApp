@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {
   Modal,
   View,
@@ -8,6 +8,7 @@ import {
   Pressable,
   Animated,
 } from 'react-native';
+import {usePopup} from '../hooks/usePopup';
 
 type Variant = 'success' | 'error' | 'info';
 
@@ -16,6 +17,7 @@ type Props = {
   title?: string;
   message?: string;
   onClose?: () => void;
+  onConfirm?: () => void;
   confirmText?: string;
   variant?: Variant;
 };
@@ -54,12 +56,12 @@ const VARIANT = {
     icon: 'i',
   },
 } as const;
-
 export function Popup({
   visible,
   title = '알림',
   message,
   onClose,
+  onConfirm,
   confirmText = '확인',
   variant = 'info',
 }: Props) {
@@ -87,14 +89,25 @@ export function Popup({
     }
   }, [visible, scale, opacity]);
 
+  const handleClose = useCallback(() => {
+    console.log('[Popup] close pressed, hasConfirm:', !!onClose);
+    onClose?.(); // ✅ 실제로 호출
+  }, [onClose]);
+
+  const handleConfirm = useCallback(() => {
+    console.log('[Popup] confirm pressed, hasConfirm:', !!onConfirm);
+    requestAnimationFrame(() => onConfirm?.()); // 이동 먼저
+    onClose?.(); // 그 다음 닫기
+  }, [onClose, onConfirm]);
+
   return (
     <Modal
       transparent
       visible={visible}
       animationType="fade"
-      onRequestClose={onClose}>
+      onRequestClose={handleClose}>
       <View style={styles.layer}>
-        <Pressable style={styles.backdrop} onPress={onClose} />
+        <Pressable style={styles.backdrop} onPress={handleClose} />
 
         <Animated.View style={[styles.card, {transform: [{scale}], opacity}]}>
           {/* ✅ 아이콘 + 타이틀 */}
@@ -113,7 +126,7 @@ export function Popup({
 
           <TouchableOpacity
             style={[styles.btn, {backgroundColor: v.buttonBg}]}
-            onPress={onClose}>
+            onPress={handleConfirm}>
             <Text style={styles.btnText}>{confirmText}</Text>
           </TouchableOpacity>
         </Animated.View>

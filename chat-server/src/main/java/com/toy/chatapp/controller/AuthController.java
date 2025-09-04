@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.toy.chatapp.common.response.ApiResponse;
+import com.toy.chatapp.dto.GetProflieResponseDto;
 import com.toy.chatapp.dto.SignInRequestDto;
 import com.toy.chatapp.dto.SignInResponseDto;
 import com.toy.chatapp.dto.SignUpRequestDto;
@@ -77,6 +79,15 @@ public class AuthController {
     @PostMapping("/verify-code")
     public ResponseEntity<ApiResponse<Object>> verifyEmailCode(@RequestBody VerityCodeRequestDto body) {
         VerityCodeResponseDto responseBody = authService.verifyEmailCode(body.getEmail(), body.getCode());
+        return ResponseEntity.ok(ApiResponse.success(responseBody));
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<ApiResponse<GetProflieResponseDto>> getProfile(
+            @RequestHeader("Authorization") String accessToken) {
+
+        GetProflieResponseDto responseBody = authService.getProfile(accessToken);
+
         return ResponseEntity.ok(ApiResponse.success(responseBody));
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.toy.chatapp.common.exception.ChatException;
 import com.toy.chatapp.common.exception.ErrorCode;
+import com.toy.chatapp.dto.GetProflieResponseDto;
 import com.toy.chatapp.dto.SignInRequestDto;
 import com.toy.chatapp.dto.SignInResponseDto;
 import com.toy.chatapp.dto.SignUpRequestDto;
@@ -48,8 +49,7 @@ public class AuthService {
             throw new ChatException(ErrorCode.AUTH_401);
         }
 
-        String accessToken = jwtTokenProvider.createToken(user.getPublicId(), user.getEmail(), user.getName(),
-                user.getRole());
+        String accessToken = jwtTokenProvider.createToken(user.getPublicId());
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getPublicId());
 
         refleshTokenRedisService.save(user.getPublicId(), refreshToken);
@@ -111,13 +111,28 @@ public class AuthService {
     }
 
     public SignInResponseDto refreshToken(String refreshToken) {
+        String token = refreshToken.trim();
+
+        if (token.regionMatches(true, 0, "Bearer ", 0, 7)) {
+            token = token.substring(7).trim(); // ← "Bearer " 제거
+        }
+        // 앞뒤 공백 제거 + 모든 공백(스페이스/탭/개행) 제거
+        token = token.trim().replaceAll("\\s+", "");
+
+        // 혹시 따옴표로 감싸져 있으면 벗김
+        if (token.length() >= 2
+                && ((token.startsWith("\"") && token.endsWith("\""))
+                        || (token.startsWith("'") && token.endsWith("'")))) {
+            token = token.substring(1, token.length() - 1);
+        }
+
         if (refreshToken == null || refreshToken.isBlank())
             throw new ChatException(ErrorCode.MISSING_TOKEN);
-
-        if (!jwtTokenProvider.validateToken(refreshToken))
+        log.info("verify : " + jwtTokenProvider.validateToken(token));
+        if (!jwtTokenProvider.validateToken(token))
             throw new ChatException(ErrorCode.INVALID_TOKEN);
 
-        UUID publicId = jwtTokenProvider.getPublicId(refreshToken);
+        UUID publicId = jwtTokenProvider.getPublicId(token);
 
         String findRefreshToken = refleshTokenRedisService.find(publicId);
 
@@ -130,8 +145,7 @@ public class AuthService {
         User user = userService.findUserByPublicId(publicId)
                 .orElseThrow(() -> new ChatException(ErrorCode.USER_404));
 
-        String accessToken = jwtTokenProvider.createToken(user.getPublicId(),
-                user.getEmail(), user.getName(), user.getRole());
+        String accessToken = jwtTokenProvider.createToken(user.getPublicId());
 
         String newRefreshToken = jwtTokenProvider.createRefreshToken(publicId);
 
@@ -139,6 +153,15 @@ public class AuthService {
 
         return responseBody;
 
+    }
+
+    public GetProflieResponseDto getProfile(String accessToken) {
+        UUID publicId = jwtTokenProvider.getPublicId(accessToken);
+        User user = userService.findUserByPublicId(publicId).orElseThrow();
+        log.info(user.getEmail());
+        GetProflieResponseDto responseBody = new GetProflieResponseDto(user);
+
+        return responseBody;
     }
 
     private String encodePassword(String password) {

@@ -2,13 +2,13 @@ import {useMutation, useQuery} from '@tanstack/react-query';
 import {useEffect} from 'react';
 import {
   getAccessToken,
+  getProfile,
   login,
   sendVerificationEmail,
   signup,
   verifyCode,
 } from '../../api/auth';
 import queryClient from '../../api/quert-client';
-import {getProfile} from '../../api/user';
 import {ExpiredTime} from '../../constants/expired';
 import {UseMutationCustomOptions, UseQueryCustomOption} from '../../types/api';
 import {Profile} from '../../types/doamain';
@@ -70,6 +70,9 @@ export const useLogin = (mutationOprion?: UseMutationCustomOptions) => {
     mutationFn: login,
     onSuccess: ({data}: {data: any}) => {
       console.log(data);
+      console.log(data.accessToken);
+      console.log(data.refreshToken);
+
       if (!data) return;
       setHeader('Authorization', `Bearer ${data.accessToken}`);
       setEncryptedStorage('refreshToken', data.refreshToken);
@@ -93,12 +96,12 @@ const useGetRefreshToken = () => {
   });
 
   const response = data as any;
-
+  console.log(response);
   useEffect(() => {
     async () => {
       if (isSuccess) {
-        setHeader('Authorization', `Bearer ${response.getAccessToken}`);
-        setEncryptedStorage('refreshToken', response.refreshToken);
+        setHeader('Authorization', `Bearer ${response}`);
+        setEncryptedStorage('refreshToken', response);
       }
     };
   }, [isSuccess]);
@@ -124,11 +127,11 @@ const useGetProfile = (queryOptions?: UseQueryCustomOption<Profile>) => {
 };
 
 export function useAuth() {
-  const loginMutation = useLogin();
+  // const loginMutation = useLogin();
   const refreshTokenQuery = useGetRefreshToken();
   const {data, isSuccess: isLogin} = useGetProfile({
     enabled: refreshTokenQuery.isSuccess,
   });
   console.log(isLogin);
-  return {loginMutation, isLogin};
+  return {isLogin};
 }

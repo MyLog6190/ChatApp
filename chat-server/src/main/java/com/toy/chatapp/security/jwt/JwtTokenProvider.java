@@ -39,11 +39,8 @@ public class JwtTokenProvider {
     }
 
     // 토큰 생성
-    public String createToken(UUID publicId, String email, String name, UserRole role) {
+    public String createToken(UUID publicId) {
         Claims claims = Jwts.claims().setSubject(publicId.toString());
-        claims.put("email", email);
-        claims.put("name", name);
-        claims.put("role", role);
 
         Date now = new Date();
         Date expirationTime = new Date(now.getTime() + accessTokenValidTime);
@@ -73,6 +70,7 @@ public class JwtTokenProvider {
 
     // 유효한 토큰인지 검증
     public boolean validateToken(String token) {
+
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
                     .setSigningKey(key)
