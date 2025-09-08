@@ -8,7 +8,6 @@ import {
   Pressable,
   Animated,
 } from 'react-native';
-import {usePopup} from '../hooks/usePopup';
 
 type Variant = 'success' | 'error' | 'info';
 
@@ -96,7 +95,7 @@ export function Popup({
 
   const handleConfirm = useCallback(() => {
     console.log('[Popup] confirm pressed, hasConfirm:', !!onConfirm);
-    requestAnimationFrame(() => onConfirm?.()); // 이동 먼저
+    onConfirm?.(); // 이동 먼저
     onClose?.(); // 그 다음 닫기
   }, [onClose, onConfirm]);
 

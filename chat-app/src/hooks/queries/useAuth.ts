@@ -76,11 +76,16 @@ export const useLogin = (mutationOprion?: UseMutationCustomOptions) => {
       if (!data) return;
       setHeader('Authorization', `Bearer ${data.accessToken}`);
       setEncryptedStorage('refreshToken', data.refreshToken);
-      queryClient.fetchQuery({queryKey: ['auth', 'getAccessToken']});
+      queryClient.fetchQuery({
+        queryKey: ['auth', 'getAccessToken'],
+        queryFn: getAccessToken, // ✅ 명시
+      });
+      return data;
     },
     onSettled: () => {
       queryClient.refetchQueries({queryKey: ['auth', 'getAccessToken']});
       queryClient.invalidateQueries({queryKey: ['auth', 'getProfile']});
+      return;
     },
   });
 };

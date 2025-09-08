@@ -12,8 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import com.toy.chatapp.enums.UserRole;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -64,6 +62,7 @@ public class JwtTokenProvider {
 
     // UUID 추출
     public UUID getPublicId(String token) {
+        log.info("token : ", token);
         return UUID.fromString(
                 Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject());
     }

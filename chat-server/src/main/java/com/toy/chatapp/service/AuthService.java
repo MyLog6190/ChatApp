@@ -110,49 +110,50 @@ public class AuthService {
         return responseDto;
     }
 
-    public SignInResponseDto refreshToken(String refreshToken) {
-        String token = refreshToken.trim();
-
-        if (token.regionMatches(true, 0, "Bearer ", 0, 7)) {
-            token = token.substring(7).trim(); // ← "Bearer " 제거
+    public SignInResponseDto refreshToken(String authHeader) {
+        // 1) 헤더 존재/형식 점검
+        if (authHeader == null || authHeader.isBlank()) {
+            throw new ChatException(ErrorCode.MISSING_TOKEN);
         }
-        // 앞뒤 공백 제거 + 모든 공백(스페이스/탭/개행) 제거
-        token = token.trim().replaceAll("\\s+", "");
 
-        // 혹시 따옴표로 감싸져 있으면 벗김
-        if (token.length() >= 2
-                && ((token.startsWith("\"") && token.endsWith("\""))
-                        || (token.startsWith("'") && token.endsWith("'")))) {
+        // 2) Bearer 토큰 추출 + 정제
+        String token = authHeader;
+        if (token.regionMatches(true, 0, "Bearer ", 0, 7)) {
+            token = token.substring(7);
+        }
+        token = token.trim().replaceAll("\\s+", "");
+        if (token.length() >= 2 &&
+                ((token.startsWith("\"") && token.endsWith("\"")) ||
+                        (token.startsWith("'") && token.endsWith("'")))) {
             token = token.substring(1, token.length() - 1);
         }
 
-        if (refreshToken == null || refreshToken.isBlank())
-            throw new ChatException(ErrorCode.MISSING_TOKEN);
-        log.info("verify : " + jwtTokenProvider.validateToken(token));
-        if (!jwtTokenProvider.validateToken(token))
-            throw new ChatException(ErrorCode.INVALID_TOKEN);
+        log.info("입력 리프레시 토큰: {}", token);
 
+        // 3) 토큰 검증
+        if (token.isBlank() || !jwtTokenProvider.validateToken(token)) {
+            throw new ChatException(ErrorCode.INVALID_TOKEN);
+        }
+
+        // 4) 토큰에서 사용자 식별 추출
         UUID publicId = jwtTokenProvider.getPublicId(token);
+        log.info("public id: {}", publicId);
 
-        String findRefreshToken = refleshTokenRedisService.find(publicId);
-
-        if (findRefreshToken == null)
+        // 5) Redis 에 저장된 리프레시 토큰과 일치 확인
+        String storedRefresh = refleshTokenRedisService.find(publicId);
+        if (storedRefresh == null || !storedRefresh.equals(token)) {
             throw new ChatException(ErrorCode.INVALID_TOKEN);
+        }
 
-        if (!refreshToken.equals(findRefreshToken))
-            throw new ChatException(ErrorCode.INVALID_TOKEN);
-
+        // 6) 새 토큰 발급 (보통 refresh도 재발급하고 Redis 갱신)
         User user = userService.findUserByPublicId(publicId)
                 .orElseThrow(() -> new ChatException(ErrorCode.USER_404));
 
         String accessToken = jwtTokenProvider.createToken(user.getPublicId());
-
         String newRefreshToken = jwtTokenProvider.createRefreshToken(publicId);
+        refleshTokenRedisService.save(publicId, newRefreshToken); // 갱신 권장
 
-        SignInResponseDto responseBody = new SignInResponseDto(accessToken, newRefreshToken);
-
-        return responseBody;
-
+        return new SignInResponseDto(accessToken, newRefreshToken);
     }
 
     public GetProflieResponseDto getProfile(String accessToken) {

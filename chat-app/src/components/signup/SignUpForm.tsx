@@ -18,7 +18,7 @@ import {
   useVerifyCode,
 } from '../../hooks/queries/useAuth';
 import {usePopup} from '../../hooks/usePopup';
-import {Popup} from '../popup';
+import {Popup} from '../Popup';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackList} from '../../types/navigation';
 import {useNavigation} from '@react-navigation/native';
@@ -80,6 +80,7 @@ export default function SignupForm() {
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const {state, open, confirm, close} = usePopup();
   const navigation = useNavigation<Navigation>();
+
   const onSubmit = async (data: any) => {
     console.log(data);
 

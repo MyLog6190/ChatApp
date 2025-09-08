@@ -39,12 +39,15 @@ public class AuthController {
     public ResponseEntity<ApiResponse<SignInResponseDto>> login(HttpServletResponse response,
             @RequestBody SignInRequestDto body) {
         SignInResponseDto responseBody = authService.signIn(body);
+        log.info(body.getEmail());
+        log.info(body.getPassword());
         return ResponseEntity.ok(ApiResponse.success(responseBody));
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<SignInResponseDto>> refresh(
-            @RequestHeader("Authorization") String refreshToken) {
+            @RequestHeader(value = "Authorization", required = false) String refreshToken) {
+        log.info("refreshToken : {}", refreshToken);
         SignInResponseDto responseBody = authService.refreshToken(refreshToken);
         return ResponseEntity.ok(ApiResponse.success(responseBody));
     }

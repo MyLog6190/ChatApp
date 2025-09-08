@@ -55,16 +55,32 @@ export const getProfile = async () => {
   return data;
 };
 
+// api/auth.ts
 export const getAccessToken = async () => {
   const refreshToken = await getEncryptedStorage('refreshToken');
-  try {
-    const response = await axiosInstance.post(`${BASE_URL}/refresh`, {
-      headers: {
-        Authorization: `Bearer ${refreshToken}`,
-      },
-    });
-    console.log(response);
-  } catch (error) {
-    console.log(error);
+
+  console.log(refreshToken);
+  if (!refreshToken) {
+    throw new Error('NO_REFRESH_TOKEN'); // ← 반드시 throw 해서 undefined 방지
   }
+
+  // ❌ 지금 코드는 headers를 body로 보내고 있음
+  // const response = await axiosInstance.post(`${BASE_URL}/refresh`, {
+  //   headers: { Authorization: `Bearer ${refreshToken}` },
+  // });
+
+  // ✅ POST의 3번째 인자에 headers
+  const {data} = await axiosInstance.post(`${BASE_URL}/refresh`, null, {
+    headers: {Authorization: `Bearer ${refreshToken}`},
+  });
+
+  // 서버가 ApiResponse<{accessToken, refreshToken?}> 형태라면
+  const payload = data?.data ?? data; // 너의 ApiResponse.success(...) 구조에 맞춰 꺼냄
+  const accessToken = payload?.accessToken ?? payload?.token ?? payload;
+
+  if (!accessToken) {
+    throw new Error('NO_ACCESS_TOKEN_IN_RESPONSE'); // undefined 반환 방지
+  }
+
+  return accessToken; // ← 문자열 반환(또는 필요하면 payload 전체 반환, 그럼 아래 select 맞춰)
 };
