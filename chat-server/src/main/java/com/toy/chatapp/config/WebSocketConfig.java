@@ -17,11 +17,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setAllowedOriginPatterns("*") // 클라이언트 도메인 허용
                 .withSockJS(); // SockJS fallback 허용
     }
-
-    @Override
-    public void configureMessageBroker(@NonNull MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/sub"); // 구독 주소 prefix
-        registry.setApplicationDestinationPrefixes("/pub"); // 발행 주소 prefix
-    }
-
 }

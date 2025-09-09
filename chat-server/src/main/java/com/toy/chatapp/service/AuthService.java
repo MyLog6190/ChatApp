@@ -49,10 +49,15 @@ public class AuthService {
             throw new ChatException(ErrorCode.AUTH_401);
         }
 
+        log.info("Public ID {} : ", user.getPublicId());
         String accessToken = jwtTokenProvider.createToken(user.getPublicId());
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getPublicId());
 
         refleshTokenRedisService.save(user.getPublicId(), refreshToken);
+        String rf = refleshTokenRedisService.find(user.getPublicId());
+
+        log.info("save check {} :", rf);
+
         SignInResponseDto responseDto = new SignInResponseDto(accessToken, refreshToken);
 
         return responseDto;
@@ -131,7 +136,7 @@ public class AuthService {
         log.info("입력 리프레시 토큰: {}", token);
 
         // 3) 토큰 검증
-        if (token.isBlank() || !jwtTokenProvider.validateToken(token)) {
+        if (!jwtTokenProvider.validateToken(token)) {
             throw new ChatException(ErrorCode.INVALID_TOKEN);
         }
 
@@ -141,6 +146,7 @@ public class AuthService {
 
         // 5) Redis 에 저장된 리프레시 토큰과 일치 확인
         String storedRefresh = refleshTokenRedisService.find(publicId);
+        log.info("redis store {} : ", storedRefresh);
         if (storedRefresh == null || !storedRefresh.equals(token)) {
             throw new ChatException(ErrorCode.INVALID_TOKEN);
         }

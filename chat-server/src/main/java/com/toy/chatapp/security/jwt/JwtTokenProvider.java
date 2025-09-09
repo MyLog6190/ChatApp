@@ -62,7 +62,7 @@ public class JwtTokenProvider {
 
     // UUID 추출
     public UUID getPublicId(String token) {
-        log.info("token : ", token);
+        log.info("token {} : ", token);
         return UUID.fromString(
                 Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject());
     }
