@@ -39,8 +39,6 @@ public class AuthController {
     public ResponseEntity<ApiResponse<SignInResponseDto>> login(HttpServletResponse response,
             @RequestBody SignInRequestDto body) {
         SignInResponseDto responseBody = authService.signIn(body);
-        log.info(body.getEmail());
-        log.info(body.getPassword());
         return ResponseEntity.ok(ApiResponse.success(responseBody));
     }
 

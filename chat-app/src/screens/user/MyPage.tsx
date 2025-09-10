@@ -9,8 +9,12 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-
+import {useLogout} from '../../hooks/queries/useAuth';
 export default function MyPageScreen() {
+  const logout = () => {
+    const logoutMatate = useLogout();
+  };
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={{padding: 20}}>
       {/* 프로필 정보 */}
@@ -41,7 +45,9 @@ export default function MyPageScreen() {
 
       {/* 로그아웃 */}
       <TouchableOpacity style={styles.logoutButton}>
-        <Text style={styles.logoutText}>로그아웃</Text>
+        <Text style={styles.logoutText} onPress={logout}>
+          로그아웃
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );

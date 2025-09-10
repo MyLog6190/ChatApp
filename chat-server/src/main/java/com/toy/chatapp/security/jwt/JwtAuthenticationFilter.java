@@ -2,6 +2,7 @@ package com.toy.chatapp.security.jwt;
 
 import java.io.IOException;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 
+@Configuration
 @AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 

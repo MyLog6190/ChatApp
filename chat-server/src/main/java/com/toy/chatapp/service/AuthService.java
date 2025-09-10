@@ -49,14 +49,10 @@ public class AuthService {
             throw new ChatException(ErrorCode.AUTH_401);
         }
 
-        log.info("Public ID {} : ", user.getPublicId());
         String accessToken = jwtTokenProvider.createToken(user.getPublicId());
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getPublicId());
 
         refleshTokenRedisService.save(user.getPublicId(), refreshToken);
-        String rf = refleshTokenRedisService.find(user.getPublicId());
-
-        log.info("save check {} :", rf);
 
         SignInResponseDto responseDto = new SignInResponseDto(accessToken, refreshToken);
 
@@ -123,10 +119,15 @@ public class AuthService {
 
         // 2) Bearer 토큰 추출 + 정제
         String token = authHeader;
+
         if (token.regionMatches(true, 0, "Bearer ", 0, 7)) {
             token = token.substring(7);
         }
-        token = token.trim().replaceAll("\\s+", "");
+
+        token = token.trim();
+
+        log.info("token : {}", token);
+
         if (token.length() >= 2 &&
                 ((token.startsWith("\"") && token.endsWith("\"")) ||
                         (token.startsWith("'") && token.endsWith("'")))) {
@@ -163,6 +164,11 @@ public class AuthService {
     }
 
     public GetProflieResponseDto getProfile(String accessToken) {
+
+        if (accessToken.regionMatches(true, 0, "Bearer ", 0, 7)) {
+            accessToken = accessToken.substring(7);
+        }
+
         UUID publicId = jwtTokenProvider.getPublicId(accessToken);
         User user = userService.findUserByPublicId(publicId).orElseThrow();
         log.info(user.getEmail());

@@ -4,6 +4,7 @@ import {
   getAccessToken,
   getProfile,
   login,
+  logout,
   sendVerificationEmail,
   signup,
   verifyCode,
@@ -87,7 +88,17 @@ export const useLogin = (mutationOprion?: UseMutationCustomOptions) => {
       queryClient.invalidateQueries({queryKey: ['auth', 'getProfile']});
       return;
     },
+    onError: error => {
+      console.log(error);
+      removeHeader('Authziztion');
+      removeEncryptedStorage('refreshToken');
+    },
   });
+};
+
+export const useLogout = (mutationOprion?: UseMutationCustomOptions) => {
+  removeHeader('Authorization');
+  removeEncryptedStorage('refreshToken');
 };
 
 const useGetRefreshToken = () => {

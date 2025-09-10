@@ -17,6 +17,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.toy.chatapp.security.handler.JwtAccessDeniedHandler;
 import com.toy.chatapp.security.handler.JwtAuthenticationEntryPoint;
+import com.toy.chatapp.security.jwt.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +28,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
     private final JwtAccessDeniedHandler accessDeniedHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -56,12 +58,12 @@ public class SecurityConfig {
                                             // 내가 등록한 authenticationEntryPoint을 실행
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler))
-
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll() // /auth/** 경로 모두 허용
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // 메서드 요청 전부 허용
-                        .anyRequest().authenticated());
-
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtAuthenticationFilter,
+                        org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
